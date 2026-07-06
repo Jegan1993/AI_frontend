@@ -17,7 +17,7 @@ function Lead() {
   useEffect(() => {
     dispatch(getLeads());
   }, [dispatch]);
-  console.log("leads", leads);
+
   const columns = [
     {
       name: "S.No",
@@ -89,32 +89,36 @@ function Lead() {
     {
       name: "Action",
       center: true,
+      minWidth: "260px",
       cell: (row) => (
-        <div className="d-flex gap-2">
+        <div className="d-flex align-items-center gap-2 flex-nowrap">
           <button
-            className="btn btn-sm btn-warning"
+            className="btn btn-warning btn-sm"
             onClick={() => handleEdit(row)}
           >
             <FaEdit />
           </button>
 
           <button
-            className="btn btn-sm btn-danger"
+            className="btn btn-danger btn-sm"
             onClick={() => handleDelete(row._id)}
           >
             <FaTrash />
           </button>
 
-          {row.status === "Won" && !row.isConverted ? (
+          {row.isConverted ? (
+            <span className="badge bg-success">Converted</span>
+          ) : row.status === "Won" ? (
             <button
-              className="btn btn-sm btn-success"
+              className="btn btn-success btn-sm"
+              style={{ whiteSpace: "nowrap" }}
               onClick={() => handleConvert(row._id)}
             >
               Convert
             </button>
-          ) : row.isConverted ? (
-            <span className="badge bg-success">Converted</span>
-          ) : null}
+          ) : (
+            <span className="badge bg-secondary text-nowrap">Not Eligible</span>
+          )}
         </div>
       ),
     },
@@ -134,8 +138,6 @@ function Lead() {
     const result = await dispatch(createCustomer(leadId));
 
     if (createCustomer.fulfilled.match(result)) {
-      alert("Customer created successfully.");
-
       dispatch(getLeads());
 
       navigate("/get-customer");

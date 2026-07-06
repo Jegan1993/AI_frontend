@@ -38,6 +38,7 @@ function EditLead() {
         e.target.type === "number" ? Number(e.target.value) : e.target.value,
     }));
   };
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();

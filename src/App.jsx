@@ -4,13 +4,18 @@ import Login from "./Auth/Login";
 import Register from "./Auth/Register";
 import DashBoard from "./DashBoard";
 
-import PrivateRoute from "./ProtectedRoute/PrivateRoute.jsx";
-import PublicRoute from "./ProtectedRoute/PublicRoute.jsx";
-import Lead from "./Pages/Crm/Lead.jsx";
-import CreateLead from "./Pages/Crm/CreateLead.jsx";
-import Editlead from "./Pages/Crm/Editlead.jsx";
-import ViewCustomer from "./Pages/Customer/ViewCustomer.jsx";
-import EditCustomer from "./Pages/Customer/EditCustomer.jsx";
+import PrivateRoute from "./ProtectedRoute/PrivateRoute";
+import PublicRoute from "./ProtectedRoute/PublicRoute";
+
+import Layout from "./Layout";
+
+import Lead from "./Pages/Crm/Lead";
+import CreateLead from "./Pages/Crm/CreateLead";
+import EditLead from "./Pages/Crm/Editlead.jsx";
+
+import ViewCustomer from "./Pages/Customer/ViewCustomer";
+import EditCustomer from "./Pages/Customer/EditCustomer";
+
 function App() {
   return (
     <BrowserRouter>
@@ -19,14 +24,15 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
         </Route>
-
         <Route element={<PrivateRoute />}>
-          <Route path="/" element={<DashBoard />} />
-          <Route path="/lead" element={<Lead />} />
-          <Route path="/create-lead" element={<CreateLead />} />
-          <Route path="/edit-lead/:id" element={<Editlead />} />
-          <Route path="/get-customer" element={<ViewCustomer />} />
-          <Route path="/edit-customer/:id" element={<EditCustomer />} />
+          <Route element={<Layout />}>
+            <Route path="/" element={<DashBoard />} />
+            <Route path="/lead" element={<Lead />} />
+            <Route path="/create-lead" element={<CreateLead />} />
+            <Route path="/edit-lead/:id" element={<EditLead />} />
+            <Route path="/get-customer" element={<ViewCustomer />} />
+            <Route path="/edit-customer/:id" element={<EditCustomer />} />
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>
