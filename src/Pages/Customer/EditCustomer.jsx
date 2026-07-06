@@ -1,10 +1,19 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getLeadById, updateLeads } from "../../CreateSlice/LeadSlice.jsx";
+
+import {
+  getCustomerById,
+  updateCustomer,
+} from "../../CreateSlice/CustomerSlice";
+
 function EditCustomer() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { id } = useParams();
+
+  const { customer, loading } = useSelector((state) => state.customer);
+
   const [formData, setFormData] = useState({
     companyName: "",
     contactPerson: "",
@@ -14,118 +23,107 @@ function EditCustomer() {
     country: "",
     employees: "",
     estimatedBudget: "",
-    source: "Website",
+    customerStatus: "Active",
     notes: "",
   });
-  const dispatch = useDispatch();
-
-  const { lead, loading } = useSelector((state) => state.lead);
-  const { id } = useParams();
-
-  console.log("Router id", id);
 
   useEffect(() => {
-    console.log("Redux lead:", lead);
-  }, [lead]);
+    dispatch(getCustomerById(id));
+  }, [dispatch, id]);
+
+  useEffect(() => {
+    if (customer) {
+      setFormData({
+        companyName: customer.companyName || "",
+        contactPerson: customer.contactPerson || "",
+        email: customer.email || "",
+        phone: customer.phone || "",
+        industry: customer.industry || "",
+        country: customer.country || "",
+        employees: customer.employees || "",
+        estimatedBudget: customer.estimatedBudget || "",
+        customerStatus: customer.customerStatus || "Active",
+        notes: customer.notes || "",
+      });
+    }
+  }, [customer]);
 
   const handleChange = (e) => {
     setFormData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value,
+      [e.target.name]:
+        e.target.type === "number" ? Number(e.target.value) : e.target.value,
     }));
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const result = await dispatch(
-      updateLeads({
+      updateCustomer({
         id,
         data: formData,
       }),
     );
-    console.log("result------", result);
 
-    if (updateLeads.fulfilled.match(result)) {
-      navigate("/lead");
+    if (updateCustomer.fulfilled.match(result)) {
+      navigate("/get-customer");
     }
   };
-  const handleAddButtonClick = () => {
-    navigate("/lead");
-  };
 
-  useEffect(() => {
-    dispatch(getLeadById(id));
-  }, [dispatch, id]);
-  useEffect(() => {
-    if (lead) {
-      setFormData({
-        companyName: lead.companyName || "",
-        contactPerson: lead.contactPerson || "",
-        email: lead.email || "",
-        phone: lead.phone || "",
-        industry: lead.industry || "",
-        country: lead.country || "",
-        employees: lead.employees || "",
-        estimatedBudget: lead.estimatedBudget || "",
-        source: lead.source || "Website",
-        notes: lead.notes || "",
-      });
-    }
-  }, [lead]);
   return (
     <div className="container py-4">
       <div className="d-flex justify-content-end mb-3">
-        <button className="btn btn-primary" onClick={handleAddButtonClick}>
+        <button
+          className="btn btn-secondary"
+          onClick={() => navigate("/get-customer")}
+        >
           Back
         </button>
       </div>
-      <div className="card shadow border-0">
+
+      <div className="card shadow">
         <div className="card-header bg-primary text-white text-center">
-          <h4 className="mb-0 ">Edit Lead</h4>
+          <h4>Edit Customer</h4>
         </div>
 
         <div className="card-body">
           <form onSubmit={handleSubmit}>
             <div className="row">
               <div className="col-md-6 mb-3">
-                <label className="form-label">Company Name</label>
+                <label>Company Name</label>
                 <input
-                  type="text"
                   className="form-control"
                   name="companyName"
                   value={formData.companyName}
                   onChange={handleChange}
-                  required
                 />
               </div>
 
               <div className="col-md-6 mb-3">
-                <label className="form-label">Contact Person</label>
+                <label>Contact Person</label>
                 <input
-                  type="text"
                   className="form-control"
                   name="contactPerson"
                   value={formData.contactPerson}
                   onChange={handleChange}
-                  required
                 />
               </div>
 
               <div className="col-md-6 mb-3">
-                <label className="form-label">Email</label>
+                <label>Email</label>
                 <input
-                  type="email"
                   className="form-control"
                   name="email"
+                  type="email"
                   value={formData.email}
                   onChange={handleChange}
                 />
               </div>
 
               <div className="col-md-6 mb-3">
-                <label className="form-label">Phone</label>
+                <label>Phone</label>
                 <input
-                  type="text"
                   className="form-control"
                   name="phone"
                   value={formData.phone}
@@ -134,9 +132,8 @@ function EditCustomer() {
               </div>
 
               <div className="col-md-6 mb-3">
-                <label className="form-label">Industry</label>
+                <label>Industry</label>
                 <input
-                  type="text"
                   className="form-control"
                   name="industry"
                   value={formData.industry}
@@ -145,9 +142,8 @@ function EditCustomer() {
               </div>
 
               <div className="col-md-6 mb-3">
-                <label className="form-label">Country</label>
+                <label>Country</label>
                 <input
-                  type="text"
                   className="form-control"
                   name="country"
                   value={formData.country}
@@ -156,10 +152,10 @@ function EditCustomer() {
               </div>
 
               <div className="col-md-6 mb-3">
-                <label className="form-label">Employees</label>
+                <label>Employees</label>
                 <input
-                  type="number"
                   className="form-control"
+                  type="number"
                   name="employees"
                   value={formData.employees}
                   onChange={handleChange}
@@ -167,10 +163,10 @@ function EditCustomer() {
               </div>
 
               <div className="col-md-6 mb-3">
-                <label className="form-label">Estimated Budget</label>
+                <label>Estimated Budget</label>
                 <input
-                  type="number"
                   className="form-control"
+                  type="number"
                   name="estimatedBudget"
                   value={formData.estimatedBudget}
                   onChange={handleChange}
@@ -178,23 +174,23 @@ function EditCustomer() {
               </div>
 
               <div className="col-md-6 mb-3">
-                <label className="form-label">Lead Source</label>
+                <label>Customer Status</label>
+
                 <select
                   className="form-select"
-                  name="source"
-                  value={formData.source}
+                  name="customerStatus"
+                  value={formData.customerStatus}
                   onChange={handleChange}
                 >
-                  <option>Website</option>
-                  <option>LinkedIn</option>
-                  <option>Facebook</option>
-                  <option>Referral</option>
-                  <option>Manual</option>
+                  <option value="Active">Active</option>
+                  <option value="Inactive">Inactive</option>
+                  <option value="Blacklisted">Blacklisted</option>
                 </select>
               </div>
 
               <div className="col-12 mb-3">
-                <label className="form-label">Notes</label>
+                <label>Notes</label>
+
                 <textarea
                   className="form-control"
                   rows="4"
@@ -206,7 +202,9 @@ function EditCustomer() {
             </div>
 
             <div className="text-end">
-              <button className="btn btn-primary px-4">Update Lead</button>
+              <button className="btn btn-primary" disabled={loading}>
+                {loading ? "Updating..." : "Update Customer"}
+              </button>
             </div>
           </form>
         </div>

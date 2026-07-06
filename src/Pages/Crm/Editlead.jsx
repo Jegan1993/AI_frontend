@@ -2,12 +2,10 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  getCustomerById,
-  updateCustomer,
-} from "../../CreateSlice/CustomerSlice.jsx";
-function Editcustomer() {
+import { getLeadById, updateLeads } from "../../CreateSlice/LeadSlice";
+function EditLead() {
   const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     companyName: "",
     contactPerson: "",
@@ -18,73 +16,78 @@ function Editcustomer() {
     employees: "",
     estimatedBudget: "",
     source: "Website",
+    status: "New",
     notes: "",
   });
+
   const dispatch = useDispatch();
 
-  const { customer, loading } = useSelector((state) => state.customer);
+  const { lead, loading } = useSelector((state) => state.lead);
   const { id } = useParams();
 
   console.log("Router id", id);
 
   useEffect(() => {
-    console.log("Redux customer:", customer);
-  }, [customer]);
+    console.log("Redux lead:", lead);
+  }, [lead]);
 
   const handleChange = (e) => {
     setFormData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value,
+      [e.target.name]:
+        e.target.type === "number" ? Number(e.target.value) : e.target.value,
     }));
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const result = await dispatch(
-      updateCustomer({
+      updateLeads({
         id,
         data: formData,
       }),
     );
     console.log("result------", result);
 
-    if (updateCustomer.fulfilled.match(result)) {
-      navigate("/customer");
+    if (updateLeads.fulfilled.match(result)) {
+      navigate("/lead");
     }
   };
-  const handcustomerdButtonClick = () => {
-    navigate("/customer");
+  const handleAddButtonClick = () => {
+    navigate("/lead");
   };
 
   useEffect(() => {
-    dispatch(getCustomerById(id));
+    dispatch(getLeadById(id));
   }, [dispatch, id]);
   useEffect(() => {
-    if (customer) {
+    if (lead) {
       setFormData({
-        companyName: customer.companyName || "",
-        contactPerson: customer.contactPerson || "",
-        email: customer.email || "",
-        phone: customer.phone || "",
-        industry: customer.industry || "",
-        country: customer.country || "",
-        employees: customer.employees || "",
-        estimatedBudget: customer.estimatedBudget || "",
-        source: customer.source || "Website",
-        notes: customer.notes || "",
+        companyName: lead.companyName || "",
+        contactPerson: lead.contactPerson || "",
+        email: lead.email || "",
+        phone: lead.phone || "",
+        industry: lead.industry || "",
+        country: lead.country || "",
+        employees: lead.employees || "",
+        estimatedBudget: lead.estimatedBudget || "",
+        source: lead.source || "Website",
+        status: lead.status || "New",
+        notes: lead.notes || "",
       });
     }
-  }, [customer]);
+  }, [lead]);
   return (
     <div className="container py-4">
       <div className="d-flex justify-content-end mb-3">
-        <button className="btn btn-primary" onClick={handcustomerdButtonClick}>
+        <button className="btn btn-primary" onClick={handleAddButtonClick}>
           Back
         </button>
       </div>
       <div className="card shadow border-0">
         <div className="card-header bg-primary text-white text-center">
-          <h4 className="mb-0 ">Edit customer</h4>
+          <h4 className="mb-0 ">Edit Lead</h4>
         </div>
 
         <div className="card-body">
@@ -181,7 +184,7 @@ function Editcustomer() {
               </div>
 
               <div className="col-md-6 mb-3">
-                <label className="form-label">customer Source</label>
+                <label className="form-label">Lead Source</label>
                 <select
                   className="form-select"
                   name="source"
@@ -195,7 +198,24 @@ function Editcustomer() {
                   <option>Manual</option>
                 </select>
               </div>
+              <div className="col-md-6 mb-3">
+                <label className="form-label">Lead Status</label>
 
+                <select
+                  className="form-select"
+                  name="status"
+                  value={formData.status}
+                  onChange={handleChange}
+                >
+                  <option value="New">New</option>
+                  <option value="Contacted">Contacted</option>
+                  <option value="Qualified">Qualified</option>
+                  <option value="Proposal Sent">Proposal Sent</option>
+                  <option value="Negotiation">Negotiation</option>
+                  <option value="Won">Won</option>
+                  <option value="Lost">Lost</option>
+                </select>
+              </div>
               <div className="col-12 mb-3">
                 <label className="form-label">Notes</label>
                 <textarea
@@ -209,7 +229,7 @@ function Editcustomer() {
             </div>
 
             <div className="text-end">
-              <button className="btn btn-primary px-4">Update customer</button>
+              <button className="btn btn-primary px-4">Update Lead</button>
             </div>
           </form>
         </div>
@@ -218,4 +238,4 @@ function Editcustomer() {
   );
 }
 
-export default Editcustomer;
+export default EditLead;

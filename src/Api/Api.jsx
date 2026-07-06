@@ -26,19 +26,15 @@ export const AuthApi = {
   },
   // Customer Managements
 
-  getCustomer: (data) => {
-    return ApiRequest.get("/get", data);
-  },
-  createCustomer: (data) => {
-    return ApiRequest.post("/create-lead", data);
-  },
-  updateCustomer: (id, data) => {
-    return ApiRequest.put(`/lead/${id}`, data);
-  },
-  deleteCustomer: (id) => {
-    return ApiRequest.delete(`/lead/${id}`);
-  },
-  getCustomerById: (id) => {
-    return ApiRequest.get(`/getById/${id}`);
-  },
+  // Api/Api.jsx
+
+  getCustomer: (params) => ApiRequest.get("/customers", params),
+
+  createCustomer: (leadId) => ApiRequest.post(`/customer/create/${leadId}`),
+
+  getCustomerById: (id) => ApiRequest.get(`/customer/${id}`),
+
+  updateCustomer: (id, data) => ApiRequest.put(`/customer/${id}`, data),
+
+  deleteCustomer: (id) => ApiRequest.delete(`/customer/${id}`),
 };

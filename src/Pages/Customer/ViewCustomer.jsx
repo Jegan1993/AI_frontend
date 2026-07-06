@@ -1,29 +1,34 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import DataTable from "react-data-table-component";
-import { FaEdit, FaPlus, FaTrash } from "react-icons/fa";
+import { FaEdit, FaTrash } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import {
-  getCustomer,
-  deleteCustomer,
-} from "../../CreateSlice/CustomerSlice.jsx";
+import { getCustomer, deleteCustomer } from "../../CreateSlice/CustomerSlice";
+
 function ViewCustomer() {
   const navigate = useNavigate();
-
   const dispatch = useDispatch();
 
-  const { customer, total, page, limit, loading } = useSelector(
-    (state) => state.lead,
-  );
+  const { customers, loading } = useSelector((state) => state.customer);
 
   useEffect(() => {
     dispatch(getCustomer());
   }, [dispatch]);
+
+  const handleEdit = (row) => {
+    navigate(`/edit-customer/${row._id}`);
+  };
+
+  const handleDelete = async (id) => {
+    await dispatch(deleteCustomer(id));
+    dispatch(getCustomer());
+  };
+
   const columns = [
     {
       name: "S.No",
-      selector: (row, index) => index + 1,
-      sortable: true,
+      cell: (row, index) => index + 1,
+      width: "80px",
     },
     {
       name: "Company",
@@ -55,37 +60,26 @@ function ViewCustomer() {
     {
       name: "Employees",
       selector: (row) => row.employees,
-      sortable: true,
     },
     {
       name: "Budget",
       selector: (row) => `$${row.estimatedBudget}`,
-      sortable: true,
-    },
-    {
-      name: "AI Score",
-      selector: (row) => row.aicustomercore,
-      sortable: true,
-    },
-    {
-      name: "Priority",
-      cell: (row) => (
-        <span
-          className={`badge ${
-            row.aiPriority === "High"
-              ? "bg-danger"
-              : row.aiPriority === "Medium"
-                ? "bg-warning text-dark"
-                : "bg-success"
-          }`}
-        >
-          {row.aiPriority}
-        </span>
-      ),
     },
     {
       name: "Status",
-      selector: (row) => row.status,
+      cell: (row) => (
+        <span
+          className={`badge ${
+            row.customerStatus === "Active"
+              ? "bg-success"
+              : row.customerStatus === "Inactive"
+                ? "bg-warning text-dark"
+                : "bg-danger"
+          }`}
+        >
+          {row.customerStatus}
+        </span>
+      ),
     },
     {
       name: "Action",
@@ -109,39 +103,25 @@ function ViewCustomer() {
       ),
     },
   ];
-  const handleEdit = (row) => {
-    navigate(`/edit-lead/${row._id}`);
-  };
 
-  const handleDelete = async (id) => {
-    await dispatch(deleteCustomer(id));
-  };
-  const handleAddButtonClick = () => {
-    navigate("/create-lead");
-  };
   return (
     <div className="container mt-4">
-      <div className="d-flex justify-content-end mb-3">
-        <button className="btn btn-primary" onClick={handleAddButtonClick}>
-          Add Lead
-        </button>
-      </div>
       <div className="card shadow">
         <div className="card-header">
-          <h4 className="mb-0 text-center">Lead Management</h4>
+          <h4 className="mb-0 text-center">Customer Management</h4>
         </div>
 
         <div className="card-body">
           <DataTable
             columns={columns}
-            data={customer}
+            data={customers}
             progressPending={loading}
             pagination
             highlightOnHover
             responsive
             striped
             persistTableHead
-            noDataComponent="No customer Found"
+            noDataComponent="No Customers Found"
           />
         </div>
       </div>

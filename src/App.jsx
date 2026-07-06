@@ -9,7 +9,8 @@ import PublicRoute from "./ProtectedRoute/PublicRoute.jsx";
 import Lead from "./Pages/Crm/Lead.jsx";
 import CreateLead from "./Pages/Crm/CreateLead.jsx";
 import Editlead from "./Pages/Crm/Editlead.jsx";
-
+import ViewCustomer from "./Pages/Customer/ViewCustomer.jsx";
+import EditCustomer from "./Pages/Customer/EditCustomer.jsx";
 function App() {
   return (
     <BrowserRouter>
@@ -24,6 +25,8 @@ function App() {
           <Route path="/lead" element={<Lead />} />
           <Route path="/create-lead" element={<CreateLead />} />
           <Route path="/edit-lead/:id" element={<Editlead />} />
+          <Route path="/get-customer" element={<ViewCustomer />} />
+          <Route path="/edit-customer/:id" element={<EditCustomer />} />
         </Route>
       </Routes>
     </BrowserRouter>

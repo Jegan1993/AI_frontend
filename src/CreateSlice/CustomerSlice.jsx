@@ -14,22 +14,23 @@ export const getCustomer = createAsyncThunk(
   },
 );
 
+
+
 export const createCustomer = createAsyncThunk(
   "customer/create",
-  async (data, thunkAPI) => {
+  async (leadId, thunkAPI) => {
     try {
-      const res = await AuthApi.createCustomer(data);
-
+      const res = await AuthApi.createCustomer(leadId);
       return res.data;
     } catch (error) {
-      console.log(error);
-
       return thunkAPI.rejectWithValue(
-        error.response?.data || { message: error.message },
+        error.response?.data || { message: error.message }
       );
     }
-  },
+  }
 );
+
+
 export const getCustomerById = createAsyncThunk(
   "customer/getById",
   async (id, thunkAPI) => {
@@ -77,7 +78,6 @@ export const deleteCustomer = createAsyncThunk(
     }
   },
 );
-
 const initialState = {
   customers: [],
   customer: null,
@@ -91,7 +91,6 @@ const initialState = {
 const customerSlice = createSlice({
   name: "customer",
   initialState,
-
   extraReducers: (builder) => {
     builder
 
@@ -102,8 +101,7 @@ const customerSlice = createSlice({
 
       .addCase(getCustomer.fulfilled, (state, action) => {
         state.loading = false;
-
-        state.leads = action.payload.data.leads;
+        state.customers = action.payload.data.customers;
         state.total = action.payload.data.total;
         state.page = action.payload.data.page;
         state.limit = action.payload.data.limit;
@@ -121,7 +119,7 @@ const customerSlice = createSlice({
 
       .addCase(createCustomer.fulfilled, (state, action) => {
         state.loading = false;
-        state.leads.unshift(action.payload.data);
+        state.customers.unshift(action.payload.data);
       })
 
       .addCase(createCustomer.rejected, (state, action) => {
@@ -131,13 +129,12 @@ const customerSlice = createSlice({
 
       .addCase(updateCustomer.pending, (state) => {
         state.loading = true;
-        state.error = null;
       })
 
       .addCase(updateCustomer.fulfilled, (state, action) => {
         state.loading = false;
 
-        state.leads = state.leads.map((item) =>
+        state.customers = state.customers.map((item) =>
           item._id === action.payload.data._id ? action.payload.data : item,
         );
       })
@@ -146,29 +143,30 @@ const customerSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
+
       .addCase(getCustomerById.pending, (state) => {
         state.loading = true;
       })
 
       .addCase(getCustomerById.fulfilled, (state, action) => {
         state.loading = false;
-        state.lead = action.payload.data;
+        state.customer = action.payload.data;
       })
 
       .addCase(getCustomerById.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
+
       .addCase(deleteCustomer.pending, (state) => {
         state.loading = true;
-        state.error = null;
       })
 
       .addCase(deleteCustomer.fulfilled, (state, action) => {
         state.loading = false;
 
-        state.leads = state.leads.filter(
-          (lead) => lead._id !== action.payload.data._id,
+        state.customers = state.customers.filter(
+          (item) => item._id !== action.payload.data._id,
         );
       })
 

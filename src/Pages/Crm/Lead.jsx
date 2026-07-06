@@ -4,6 +4,7 @@ import { FaEdit, FaPlus, FaTrash } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getLeads, deleteLeads } from "../../CreateSlice/LeadSlice";
+import { createCustomer } from "../../CreateSlice/CustomerSlice";
 function Lead() {
   const navigate = useNavigate();
 
@@ -103,6 +104,17 @@ function Lead() {
           >
             <FaTrash />
           </button>
+
+          {row.status === "Won" && !row.isConverted ? (
+            <button
+              className="btn btn-sm btn-success"
+              onClick={() => handleConvert(row._id)}
+            >
+              Convert
+            </button>
+          ) : row.isConverted ? (
+            <span className="badge bg-success">Converted</span>
+          ) : null}
         </div>
       ),
     },
@@ -117,6 +129,21 @@ function Lead() {
   const handleAddButtonClick = () => {
     navigate("/create-lead");
   };
+
+  const handleConvert = async (leadId) => {
+    const result = await dispatch(createCustomer(leadId));
+
+    if (createCustomer.fulfilled.match(result)) {
+      alert("Customer created successfully.");
+
+      dispatch(getLeads());
+
+      navigate("/get-customer");
+    } else {
+      alert(result.payload?.message || "Customer conversion failed.");
+    }
+  };
+
   return (
     <div className="container mt-4">
       <div className="d-flex justify-content-end mb-3">

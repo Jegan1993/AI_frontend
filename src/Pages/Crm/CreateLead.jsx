@@ -1,8 +1,7 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { createLeads } from "../CreateSlice/LeadSlice.jsx";
+import { createLeads } from "../../CreateSlice/LeadSlice";
 function CreateLead() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -18,8 +17,7 @@ function CreateLead() {
     notes: "",
   });
   const dispatch = useDispatch();
-
-  const { loading } = useSelector((state) => state.auth);
+  const { loading } = useSelector((state) => state.lead);
 
   const handleChange = (e) => {
     setFormData((prev) => ({
@@ -31,20 +29,9 @@ function CreateLead() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    try {
-      const token = localStorage.getItem("token");
+    const result = await dispatch(createLeads(formData));
 
-      const response = await axios.post(
-        "http://localhost:3131/api/create-lead",
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      );
-      console.log("response", response);
-
+    if (createLeads.fulfilled.match(result)) {
       setFormData({
         companyName: "",
         contactPerson: "",
@@ -57,8 +44,10 @@ function CreateLead() {
         source: "Website",
         notes: "",
       });
-    } catch (error) {
-      console.error(error);
+
+      navigate("/lead");
+    } else {
+      console.log(result.payload);
     }
   };
   const handleAddButtonClick = () => {

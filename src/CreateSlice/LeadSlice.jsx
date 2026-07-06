@@ -16,7 +16,7 @@ export const createLeads = createAsyncThunk(
   async (data, thunkAPI) => {
     try {
       const res = await AuthApi.createLead(data);
-
+      console.log("create lead res", res);
       return res.data;
     } catch (error) {
       console.log(error);
