@@ -14,6 +14,10 @@ function SideBar() {
     location.pathname.startsWith("/get-customer") ||
     location.pathname.startsWith("/edit-customer");
 
+  const quotationActive =
+    location.pathname.startsWith("/view-quotation") ||
+    location.pathname.startsWith("/edit-quotation");
+
   const linkStyle = (active) => ({
     display: "block",
     padding: "12px 16px",
@@ -47,6 +51,10 @@ function SideBar() {
 
       <NavLink to="/get-customer" style={linkStyle(customerActive)}>
         Customer Management
+      </NavLink>
+
+      <NavLink to="/view-quotation" style={linkStyle(quotationActive)}>
+        Quotation
       </NavLink>
     </div>
   );

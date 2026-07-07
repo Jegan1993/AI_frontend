@@ -15,6 +15,9 @@ import EditLead from "./Pages/Crm/Editlead.jsx";
 
 import ViewCustomer from "./Pages/Customer/ViewCustomer";
 import EditCustomer from "./Pages/Customer/EditCustomer";
+import ViewQuotation from "./Pages/Quotation/ViewQuoataion.jsx";
+import EditQuoataion from "./Pages/Quotation/EditQuoataion.jsx";
+import CreateQuoataion from "./Pages/Quotation/CreateQuoataion.jsx";
 
 function App() {
   return (
@@ -32,6 +35,9 @@ function App() {
             <Route path="/edit-lead/:id" element={<EditLead />} />
             <Route path="/get-customer" element={<ViewCustomer />} />
             <Route path="/edit-customer/:id" element={<EditCustomer />} />
+            <Route path="/view-quotation" element={<ViewQuotation />} />
+            <Route path="/edit-quotation/:id" element={<EditQuoataion />} />
+            <Route path="/create-quotation" element={<CreateQuoataion />} />
           </Route>
         </Route>
       </Routes>

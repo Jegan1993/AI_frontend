@@ -26,8 +26,6 @@ export const AuthApi = {
   },
   // Customer Managements
 
-  // Api/Api.jsx
-
   getCustomer: (params) => ApiRequest.get("/customers", params),
 
   createCustomer: (leadId) => ApiRequest.post(`/customer/create/${leadId}`),
@@ -37,4 +35,16 @@ export const AuthApi = {
   updateCustomer: (id, data) => ApiRequest.put(`/customer/${id}`, data),
 
   deleteCustomer: (id) => ApiRequest.delete(`/customer/${id}`),
+
+  //quotation
+
+  getQuotation: (params) => ApiRequest.get("/quotation", params),
+
+  createQuotation: (data) => ApiRequest.post("/quotation", data),
+
+  getQuotationById: (id) => ApiRequest.get(`/quotation/${id}`),
+
+  updateQuotation: (id, data) => ApiRequest.put(`/quotation/${id}`, data),
+
+  deleteQuotation: (id) => ApiRequest.delete(`/quotation/${id}`),
 };
