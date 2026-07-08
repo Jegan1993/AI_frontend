@@ -2,7 +2,7 @@ import { NavLink, useLocation } from "react-router-dom";
 
 function SideBar() {
   const location = useLocation();
-
+  const abc = " hello welcome";
   const dashboardActive = location.pathname === "/";
 
   const leadActive =
@@ -16,7 +16,8 @@ function SideBar() {
 
   const quotationActive =
     location.pathname.startsWith("/view-quotation") ||
-    location.pathname.startsWith("/edit-quotation");
+    location.pathname.startsWith("/edit-quotation") ||
+    location.pathname.startsWith("/create-quotation");
 
   const linkStyle = (active) => ({
     display: "block",

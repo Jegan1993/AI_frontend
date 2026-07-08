@@ -2,9 +2,12 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { createLeads } from "../../CreateSlice/LeadSlice";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 function CreateLead() {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
+
+  const initialValues = {
     companyName: "",
     contactPerson: "",
     email: "",
@@ -15,41 +18,59 @@ function CreateLead() {
     estimatedBudget: "",
     source: "Website",
     notes: "",
+  };
+
+  const validationSchema = Yup.object({
+    companyName: Yup.string().required("Company Name is required"),
+
+    contactPerson: Yup.string().required("Contact Person is required"),
+
+    email: Yup.string()
+      .email("Invalid email address")
+      .required("Email is required"),
+
+    phone: Yup.string()
+      .matches(/^[0-9]{10}$/, "Phone number must be exactly 10 digits")
+      .required("Phone is required"),
+
+    industry: Yup.string().required("Industry is required"),
+
+    country: Yup.string().required("Country is required"),
+
+    employees: Yup.number()
+      .typeError("Employees must be a number")
+      .required("Employees is required")
+      .min(1, "Minimum 1 employee"),
+
+    estimatedBudget: Yup.number()
+      .typeError("Estimated Budget must be a number")
+      .required("Estimated Budget is required")
+      .min(0, "Budget cannot be negative"),
+
+    source: Yup.string().required("Lead Source is required"),
+
+    notes: Yup.string().max(500, "Maximum 500 characters"),
   });
   const dispatch = useDispatch();
   const { loading } = useSelector((state) => state.lead);
 
-  const handleChange = (e) => {
-    setFormData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const result = await dispatch(createLeads(formData));
+  const handleSubmit = async (values, { resetForm }) => {
+    const result = await dispatch(createLeads(values));
 
     if (createLeads.fulfilled.match(result)) {
-      setFormData({
-        companyName: "",
-        contactPerson: "",
-        email: "",
-        phone: "",
-        industry: "",
-        country: "",
-        employees: "",
-        estimatedBudget: "",
-        source: "Website",
-        notes: "",
-      });
+      resetForm();
 
       navigate("/lead");
     } else {
       console.log(result.payload);
     }
   };
+  const formik = useFormik({
+    initialValues,
+    validationSchema,
+    enableReinitialize: true,
+    onSubmit: handleSubmit,
+  });
   const handleAddButtonClick = () => {
     navigate("/lead");
   };
@@ -66,105 +87,188 @@ function CreateLead() {
         </div>
 
         <div className="card-body">
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={formik.handleSubmit}>
             <div className="row">
               <div className="col-md-6 mb-3">
                 <label className="form-label">Company Name</label>
                 <input
                   type="text"
-                  className="form-control"
+                  className={`form-control ${
+                    formik.touched.companyName && formik.errors.companyName
+                      ? "is-invalid"
+                      : ""
+                  }`}
                   name="companyName"
-                  value={formData.companyName}
-                  onChange={handleChange}
-                  required
+                  value={formik.values.companyName}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                 />
+
+                {formik.touched.companyName && formik.errors.companyName && (
+                  <div className="invalid-feedback">
+                    {formik.errors.companyName}
+                  </div>
+                )}
               </div>
 
               <div className="col-md-6 mb-3">
                 <label className="form-label">Contact Person</label>
                 <input
                   type="text"
-                  className="form-control"
+                  className={`form-control ${
+                    formik.touched.contactPerson && formik.errors.contactPerson
+                      ? "is-invalid"
+                      : ""
+                  }`}
                   name="contactPerson"
-                  value={formData.contactPerson}
-                  onChange={handleChange}
-                  required
+                  value={formik.values.contactPerson}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                 />
+                {formik.touched.contactPerson &&
+                  formik.errors.contactPerson && (
+                    <div className="invalid-feedback">
+                      {formik.errors.contactPerson}
+                    </div>
+                  )}
               </div>
 
               <div className="col-md-6 mb-3">
                 <label className="form-label">Email</label>
                 <input
                   type="email"
-                  className="form-control"
+                  className={`form-control ${
+                    formik.touched.email && formik.errors.email
+                      ? "is-invalid"
+                      : ""
+                  }`}
                   name="email"
-                  value={formData.email}
-                  onChange={handleChange}
+                  value={formik.values.email}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                 />
+                {formik.touched.email && formik.errors.email && (
+                  <div className="invalid-feedback">{formik.errors.email}</div>
+                )}
               </div>
 
               <div className="col-md-6 mb-3">
                 <label className="form-label">Phone</label>
                 <input
                   type="text"
-                  className="form-control"
+                  className={`form-control ${
+                    formik.touched.phone && formik.errors.phone
+                      ? "is-invalid"
+                      : ""
+                  }`}
                   name="phone"
-                  value={formData.phone}
-                  onChange={handleChange}
+                  value={formik.values.phone}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                 />
+                {formik.touched.phone && formik.errors.phone && (
+                  <div className="invalid-feedback">{formik.errors.phone}</div>
+                )}
               </div>
 
               <div className="col-md-6 mb-3">
                 <label className="form-label">Industry</label>
                 <input
                   type="text"
-                  className="form-control"
+                  className={`form-control ${
+                    formik.touched.industry && formik.errors.industry
+                      ? "is-invalid"
+                      : ""
+                  }`}
                   name="industry"
-                  value={formData.industry}
-                  onChange={handleChange}
+                  value={formik.values.industry}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                 />
+                {formik.touched.industry && formik.errors.industry && (
+                  <div className="invalid-feedback">
+                    {formik.errors.industry}
+                  </div>
+                )}
               </div>
 
               <div className="col-md-6 mb-3">
                 <label className="form-label">Country</label>
                 <input
                   type="text"
-                  className="form-control"
+                  className={`form-control ${
+                    formik.touched.country && formik.errors.country
+                      ? "is-invalid"
+                      : ""
+                  }`}
                   name="country"
-                  value={formData.country}
-                  onChange={handleChange}
+                  value={formik.values.country}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                 />
+                {formik.touched.country && formik.errors.country && (
+                  <div className="invalid-feedback">
+                    {formik.errors.country}
+                  </div>
+                )}
               </div>
 
               <div className="col-md-6 mb-3">
                 <label className="form-label">Employees</label>
                 <input
                   type="number"
-                  className="form-control"
+                  className={`form-control ${
+                    formik.touched.employees && formik.errors.employees
+                      ? "is-invalid"
+                      : ""
+                  }`}
                   name="employees"
-                  value={formData.employees}
-                  onChange={handleChange}
+                  value={formik.values.employees}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                 />
+                {formik.touched.employees && formik.errors.employees && (
+                  <div className="invalid-feedback">
+                    {formik.errors.employees}
+                  </div>
+                )}
               </div>
 
               <div className="col-md-6 mb-3">
                 <label className="form-label">Estimated Budget</label>
                 <input
                   type="number"
-                  className="form-control"
+                  className={`form-control ${
+                    formik.touched.estimatedBudget &&
+                    formik.errors.estimatedBudget
+                      ? "is-invalid"
+                      : ""
+                  }`}
                   name="estimatedBudget"
-                  value={formData.estimatedBudget}
-                  onChange={handleChange}
+                  value={formik.values.estimatedBudget}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                 />
+                {formik.touched.estimatedBudget &&
+                  formik.errors.estimatedBudget && (
+                    <div className="invalid-feedback">
+                      {formik.errors.estimatedBudget}
+                    </div>
+                  )}
               </div>
 
               <div className="col-md-6 mb-3">
                 <label className="form-label">Lead Source</label>
                 <select
-                  className="form-select"
+                  className={`form-select ${
+                    formik.touched.source && formik.errors.source
+                      ? "is-invalid"
+                      : ""
+                  }`}
                   name="source"
-                  value={formData.source}
-                  onChange={handleChange}
+                  value={formik.values.source}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                 >
                   <option>Website</option>
                   <option>LinkedIn</option>
@@ -177,12 +281,20 @@ function CreateLead() {
               <div className="col-12 mb-3">
                 <label className="form-label">Notes</label>
                 <textarea
-                  className="form-control"
+                  className={`form-control ${
+                    formik.touched.notes && formik.errors.notes
+                      ? "is-invalid"
+                      : ""
+                  }`}
                   rows="4"
                   name="notes"
-                  value={formData.notes}
-                  onChange={handleChange}
+                  value={formik.values.notes}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                 />
+                {formik.touched.notes && formik.errors.notes && (
+                  <div className="invalid-feedback">{formik.errors.notes}</div>
+                )}
               </div>
             </div>
 

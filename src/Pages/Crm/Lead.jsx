@@ -1,11 +1,24 @@
 import React, { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
-import { FaEdit, FaPlus, FaTrash } from "react-icons/fa";
+import {
+  FaEdit,
+  FaTrash,
+  FaRobot,
+  FaEnvelope,
+  FaUserCheck,
+} from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getLeads, deleteLeads } from "../../CreateSlice/LeadSlice";
 import { createCustomer } from "../../CreateSlice/CustomerSlice";
+import {
+  generateLeadScore,
+  generateEmail,
+  clearEmail,
+} from "../../CreateSlice/AiSlice";
 function Lead() {
+  const [showModal, setShowModal] = useState(false);
+  const [showEmailModal, setShowEmailModal] = useState(false);
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
@@ -13,7 +26,30 @@ function Lead() {
   const { leads, total, page, limit, loading } = useSelector(
     (state) => state.lead,
   );
+  const {
+    leadScore,
+    loading: aiLoading,
+    email,
+  } = useSelector((state) => state.ai);
+  const handleAiScore = async (id) => {
+    const result = await dispatch(generateLeadScore(id));
 
+    if (generateLeadScore.fulfilled.match(result)) {
+      setShowModal(true);
+    }
+  };
+  const handleGenerateEmail = async (leadId) => {
+    const result = await dispatch(generateEmail(leadId));
+    console.log("jhbjhcbjhbdsjchbsdjczjh", result.payload);
+    if (generateEmail.fulfilled.match(result)) {
+      setShowEmailModal(true);
+    }
+  };
+  const closeEmailModal = () => {
+    setShowEmailModal(false);
+
+    dispatch(clearEmail());
+  };
   useEffect(() => {
     dispatch(getLeads());
   }, [dispatch]);
@@ -30,7 +66,7 @@ function Lead() {
       sortable: true,
     },
     {
-      name: "Contact Person",
+      name: "Name",
       selector: (row) => row.contactPerson,
       sortable: true,
     },
@@ -52,7 +88,7 @@ function Lead() {
       selector: (row) => row.country,
     },
     {
-      name: "Employees",
+      name: "Total Employees",
       selector: (row) => row.employees,
       sortable: true,
     },
@@ -95,6 +131,7 @@ function Lead() {
           <button
             className="btn btn-warning btn-sm"
             onClick={() => handleEdit(row)}
+            title="Edit"
           >
             <FaEdit />
           </button>
@@ -102,22 +139,40 @@ function Lead() {
           <button
             className="btn btn-danger btn-sm"
             onClick={() => handleDelete(row._id)}
+            title="Delete"
           >
             <FaTrash />
           </button>
 
+          <button
+            className="btn btn-info btn-sm text-nowrap"
+            onClick={() => handleAiScore(row._id)}
+            title="AI Score"
+          >
+            AI Score
+          </button>
+
+          <button
+            className="btn btn-primary btn-sm text-nowrap"
+            onClick={() => handleGenerateEmail(row._id)}
+            title="AI Email"
+          >
+            AI Email
+          </button>
+
           {row.isConverted ? (
-            <span className="badge bg-success">Converted</span>
+            <span className="badge bg-success px-3 py-2">Converted</span>
           ) : row.status === "Won" ? (
             <button
-              className="btn btn-success btn-sm"
-              style={{ whiteSpace: "nowrap" }}
+              className="btn btn-success btn-sm text-nowrap"
               onClick={() => handleConvert(row._id)}
+              title="Convert"
             >
+              <FaUserCheck className="me-1" />
               Convert
             </button>
           ) : (
-            <span className="badge bg-secondary text-nowrap">Not Eligible</span>
+            <span className="badge bg-secondary px-3 py-2">Not Eligible</span>
           )}
         </div>
       ),
@@ -171,6 +226,121 @@ function Lead() {
             noDataComponent="No Leads Found"
           />
         </div>
+        {showModal && leadScore && (
+          <div
+            className="modal fade show"
+            style={{
+              display: "block",
+              background: "rgba(0,0,0,0.5)",
+            }}
+          >
+            <div className="modal-dialog modal-lg modal-dialog-centered">
+              <div className="modal-content">
+                <div className="modal-header bg-primary text-white">
+                  <h5 className="modal-title">AI Lead Analysis</h5>
+
+                  <button
+                    className="btn-close btn-close-white"
+                    onClick={() => setShowModal(false)}
+                  ></button>
+                </div>
+
+                <div className="modal-body">
+                  <h4>Score : {leadScore.score}</h4>
+
+                  <h5>Priority : {leadScore.priority}</h5>
+
+                  <hr />
+
+                  <h6>Reason</h6>
+
+                  <p>{leadScore.reason}</p>
+
+                  <hr />
+
+                  <h6>Next Action</h6>
+
+                  <p>{leadScore.nextAction}</p>
+                </div>
+
+                <div className="modal-footer">
+                  <button
+                    className="btn btn-secondary"
+                    onClick={() => setShowModal(false)}
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+        {showEmailModal && email && (
+          <div
+            className="modal fade show d-block"
+            style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
+          >
+            <div className="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+              <div className="modal-content">
+                <div className="modal-header bg-primary text-white">
+                  <h5 className="modal-title">AI Email Generator</h5>
+
+                  <button
+                    type="button"
+                    className="btn-close btn-close-white"
+                    onClick={() => setShowEmailModal(false)}
+                  ></button>
+                </div>
+
+                <div className="modal-body">
+                  <div className="mb-3">
+                    <label className="form-label fw-bold">Subject</label>
+
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={email.subject}
+                      readOnly
+                    />
+                  </div>
+
+                  <div className="mb-3">
+                    <label className="form-label fw-bold">
+                      Generated Email
+                    </label>
+
+                    <textarea
+                      rows={15}
+                      className="form-control"
+                      value={email.body}
+                      readOnly
+                    />
+                  </div>
+                </div>
+
+                <div className="modal-footer">
+                  <button
+                    className="btn btn-success"
+                    onClick={() =>
+                      navigator.clipboard.writeText(
+                        `Subject: ${email.subject}\n\n${email.body}`,
+                      )
+                    }
+                  >
+                    Copy Email
+                  </button>
+
+                  <button
+                    className="btn btn-secondary"
+                    onClick={() => setShowEmailModal(false)}
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

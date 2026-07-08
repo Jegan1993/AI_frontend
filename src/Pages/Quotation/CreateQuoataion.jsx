@@ -69,7 +69,7 @@ function CreateQuotation() {
 
         <button
           className="btn btn-secondary"
-          onClick={() => navigate("/quotation")}
+          onClick={() => navigate("/view-quotation")}
         >
           Back
         </button>
