@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import {
   getQuotation,
   deleteQuotation,
+  updateQuotationStatus,
 } from "../../CreateSlice/QuotationSlice";
 
 function ViewQuotation() {
@@ -114,21 +115,19 @@ function ViewQuotation() {
       name: "Status",
       center: true,
       cell: (row) => (
-        <span
-          className={`badge px-3 py-2 ${
-            row.status === "Accepted"
-              ? "bg-success"
-              : row.status === "Rejected"
-                ? "bg-danger"
-                : row.status === "Sent"
-                  ? "bg-primary"
-                  : row.status === "Expired"
-                    ? "bg-dark"
-                    : "bg-warning text-dark"
-          }`}
+        <select
+          value={row.status}
+          onChange={(e) => {
+            handleStatusChange(row._id, e.target.value);
+          }}
         >
-          {row.status}
-        </span>
+          <option value="Draft">Draft</option>
+          <option value="Sent">Sent</option>
+          <option value="Viewed">Viewed</option>
+          <option value="Accepted">Accepted</option>
+          <option value="Rejected">Rejected</option>
+          <option value="Expired">Expired</option>
+        </select>
       ),
     },
 
@@ -155,7 +154,18 @@ function ViewQuotation() {
       ),
     },
   ];
+  const handleStatusChange = async (id, status) => {
+    console.log("Inside handleStatusChange");
 
+    const result = await dispatch(
+      updateQuotationStatus({
+        id,
+        status,
+      }),
+    );
+
+  };
+  
   return (
     <div className="container-fluid mt-4">
       <div className="card shadow border-0">

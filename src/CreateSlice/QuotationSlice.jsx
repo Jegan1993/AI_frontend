@@ -70,6 +70,26 @@ export const deleteQuotation = createAsyncThunk(
     }
   },
 );
+export const updateQuotationStatus = createAsyncThunk(
+  "quotation/updateQuotationStatus",
+  async ({ id, status }, { rejectWithValue }) => {
+    try {
+      const response = await AuthApi.updateQuotationStatus(id, {
+        status,
+      });
+
+      return response.data.data;
+    } catch (error) {
+      console.log(error);
+      console.log(error.response);
+      console.log(error.response?.data);
+
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to update quotation status",
+      );
+    }
+  },
+);
 
 const initialState = {
   quotations: [],
@@ -169,6 +189,26 @@ const quotationSlice = createSlice({
       })
 
       .addCase(deleteQuotation.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(updateQuotationStatus.pending, (state) => {
+        state.loading = true;
+      })
+
+      .addCase(updateQuotationStatus.fulfilled, (state, action) => {
+        state.loading = false;
+
+        const index = state.quotations.findIndex(
+          (item) => item._id === action.payload._id,
+        );
+
+        if (index !== -1) {
+          state.quotations[index] = action.payload;
+        }
+      })
+
+      .addCase(updateQuotationStatus.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

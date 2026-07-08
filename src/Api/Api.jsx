@@ -47,4 +47,8 @@ export const AuthApi = {
   updateQuotation: (id, data) => ApiRequest.put(`/quotation/${id}`, data),
 
   deleteQuotation: (id) => ApiRequest.delete(`/quotation/${id}`),
+
+  updateQuotationStatus: (id, data) => {
+    return ApiRequest.put(`/quotation/status/${id}`, data);
+  },
 };
