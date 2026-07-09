@@ -1,34 +1,34 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useFormik } from "formik";
+
 import { getCustomer } from "../../CreateSlice/CustomerSlice";
 import { getQuotation } from "../../CreateSlice/QuotationSlice";
+import { orderValidationSchema } from "../../helper/ValidationSchema";
 
-function OrderForm({
-  formData,
-  setFormData,
-  onSubmit,
-  buttonText = "Save Order",
-}) {
+function OrderForm({ initialValues, onSubmit, buttonText = "Save Order" }) {
   const dispatch = useDispatch();
 
-  const customer = useSelector((state) => state.customer.customer || []);
+  const customers = useSelector((state) => state.customer.customer || []);
 
-  const quotations = useSelector(
-    (state) => state.quotation.quotations || []
-  );
+  const quotations = useSelector((state) => state.quotation.quotations || []);
+
   useEffect(() => {
     dispatch(getCustomer());
     dispatch(getQuotation());
   }, [dispatch]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+  const formik = useFormik({
+    enableReinitialize: true,
 
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+    initialValues,
+
+    validationSchema: orderValidationSchema,
+
+    onSubmit: (values) => {
+      onSubmit(values);
+    },
+  });
 
   const handleQuotationChange = (e) => {
     const quotationId = e.target.value;
@@ -37,54 +37,73 @@ function OrderForm({
 
     if (!quotation) return;
 
-    setFormData((prev) => ({
-      ...prev,
+    formik.setValues({
+      ...formik.values,
       quotationId,
-      customerId: quotation.customerId?._id,
-      totalAmount: quotation.grandTotal,
-    }));
+      customerId: quotation.customerId?._id || "",
+      totalAmount: quotation.grandTotal || 0,
+    });
   };
 
   return (
     <div className="container mt-4">
       <div className="card shadow">
         <div className="card-header bg-primary text-white">
-          <h4 className="mb-0">{buttonText}</h4>
+          <h4>{buttonText}</h4>
         </div>
 
         <div className="card-body">
-          <form onSubmit={onSubmit}>
+          <form onSubmit={formik.handleSubmit}>
             <div className="row">
+              {/* Order Number */}
+
               <div className="col-md-6 mb-3">
                 <label className="form-label">Order Number</label>
 
                 <input
                   type="text"
+                  name="orderNo"
                   className="form-control"
-                  name="orderNumber"
-                  value={formData.orderNumber}
-                  onChange={handleChange}
+                  value={formik.values.orderNo}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                 />
+
+                {formik.touched.orderNo && formik.errors.orderNo && (
+                  <small className="text-danger">{formik.errors.orderNo}</small>
+                )}
               </div>
+
+              {/* Order Date */}
 
               <div className="col-md-6 mb-3">
                 <label className="form-label">Order Date</label>
 
                 <input
                   type="date"
-                  className="form-control"
                   name="orderDate"
-                  value={formData.orderDate}
-                  onChange={handleChange}
+                  className="form-control"
+                  value={formik.values.orderDate}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                 />
+
+                {formik.touched.orderDate && formik.errors.orderDate && (
+                  <small className="text-danger">
+                    {formik.errors.orderDate}
+                  </small>
+                )}
               </div>
 
+              {/* Quotation */}
+
               <div className="col-md-6 mb-3">
-                <label className="form-label">Select Accepted Quotation</label>
+                <label className="form-label">Accepted Quotation</label>
 
                 <select
+                  name="quotationId"
                   className="form-select"
-                  value={formData.quotationId}
+                  value={formik.values.quotationId}
                   onChange={handleQuotationChange}
                 >
                   <option value="">Select Quotation</option>
@@ -97,47 +116,73 @@ function OrderForm({
                       </option>
                     ))}
                 </select>
+
+                {formik.touched.quotationId && formik.errors.quotationId && (
+                  <small className="text-danger">
+                    {formik.errors.quotationId}
+                  </small>
+                )}
               </div>
+
+              {/* Customer */}
 
               <div className="col-md-6 mb-3">
                 <label className="form-label">Customer</label>
 
                 <select
-                  className="form-select"
                   name="customerId"
-                  value={formData.customerId}
-                  onChange={handleChange}
+                  className="form-select"
+                  value={formik.values.customerId}
+                  onChange={formik.handleChange}
                 >
                   <option value="">Select Customer</option>
 
-                  {customer.map((item) => (
+                  {customers.map((item) => (
                     <option key={item._id} value={item._id}>
                       {item.companyName}
                     </option>
                   ))}
                 </select>
+
+                {formik.touched.customerId && formik.errors.customerId && (
+                  <small className="text-danger">
+                    {formik.errors.customerId}
+                  </small>
+                )}
               </div>
+
+              {/* Delivery Address */}
 
               <div className="col-md-6 mb-3">
                 <label className="form-label">Delivery Address</label>
 
                 <input
                   type="text"
-                  className="form-control"
                   name="deliveryAddress"
-                  value={formData.deliveryAddress}
-                  onChange={handleChange}
+                  className="form-control"
+                  value={formik.values.deliveryAddress}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                 />
+
+                {formik.touched.deliveryAddress &&
+                  formik.errors.deliveryAddress && (
+                    <small className="text-danger">
+                      {formik.errors.deliveryAddress}
+                    </small>
+                  )}
               </div>
+
+              {/* Payment Method */}
 
               <div className="col-md-6 mb-3">
                 <label className="form-label">Payment Method</label>
 
                 <select
-                  className="form-select"
                   name="paymentMethod"
-                  value={formData.paymentMethod}
-                  onChange={handleChange}
+                  className="form-select"
+                  value={formik.values.paymentMethod}
+                  onChange={formik.handleChange}
                 >
                   <option value="Cash">Cash</option>
                   <option value="Card">Card</option>
@@ -146,20 +191,24 @@ function OrderForm({
                 </select>
               </div>
 
+              {/* Payment Status */}
+
               <div className="col-md-6 mb-3">
                 <label className="form-label">Payment Status</label>
 
                 <select
-                  className="form-select"
                   name="paymentStatus"
-                  value={formData.paymentStatus}
-                  onChange={handleChange}
+                  className="form-select"
+                  value={formik.values.paymentStatus}
+                  onChange={formik.handleChange}
                 >
                   <option value="Pending">Pending</option>
                   <option value="Paid">Paid</option>
-                  <option value="Partially Paid">Partially Paid</option>
+                  <option value="Partial">Partial</option>
                 </select>
               </div>
+
+              {/* Total */}
 
               <div className="col-md-6 mb-3">
                 <label className="form-label">Total Amount</label>
@@ -167,27 +216,30 @@ function OrderForm({
                 <input
                   type="number"
                   className="form-control"
-                  name="totalAmount"
-                  value={formData.totalAmount}
+                  value={formik.values.totalAmount}
                   readOnly
                 />
               </div>
+
+              {/* Notes */}
 
               <div className="col-12 mb-3">
                 <label className="form-label">Notes</label>
 
                 <textarea
                   rows="4"
-                  className="form-control"
                   name="notes"
-                  value={formData.notes}
-                  onChange={handleChange}
+                  className="form-control"
+                  value={formik.values.notes}
+                  onChange={formik.handleChange}
                 />
               </div>
             </div>
 
             <div className="text-end">
-              <button className="btn btn-success px-4">{buttonText}</button>
+              <button type="submit" className="btn btn-success">
+                {buttonText}
+              </button>
             </div>
           </form>
         </div>
