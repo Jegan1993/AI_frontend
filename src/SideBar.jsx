@@ -19,6 +19,11 @@ function SideBar() {
     location.pathname.startsWith("/edit-quotation") ||
     location.pathname.startsWith("/create-quotation");
 
+  const getorderActive =
+    location.pathname.startsWith("/view-order") ||
+    location.pathname.startsWith("/create-order") ||
+    location.pathname.startsWith("/edit-order");
+
   const linkStyle = (active) => ({
     display: "block",
     padding: "12px 16px",
@@ -56,6 +61,9 @@ function SideBar() {
 
       <NavLink to="/view-quotation" style={linkStyle(quotationActive)}>
         Quotation
+      </NavLink>
+      <NavLink to="/view-order" style={linkStyle(getorderActive)}>
+        Order Management
       </NavLink>
     </div>
   );

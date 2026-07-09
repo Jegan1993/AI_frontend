@@ -18,6 +18,9 @@ import EditCustomer from "./Pages/Customer/EditCustomer";
 import ViewQuotation from "./Pages/Quotation/ViewQuoataion.jsx";
 import EditQuoataion from "./Pages/Quotation/EditQuoataion.jsx";
 import CreateQuoataion from "./Pages/Quotation/CreateQuoataion.jsx";
+import ViewOrder from "./Pages/Order/ViewOrder.jsx";
+import CreateOrder from "./Pages/Order/CreateOrder.jsx";
+import EditOrder from "./Pages/Order/EditOrder.jsx";
 
 function App() {
   return (
@@ -38,6 +41,9 @@ function App() {
             <Route path="/view-quotation" element={<ViewQuotation />} />
             <Route path="/edit-quotation/:id" element={<EditQuoataion />} />
             <Route path="/create-quotation" element={<CreateQuoataion />} />
+            <Route path="/view-order" element={<ViewOrder />} />
+            <Route path="/create-order" element={<CreateOrder />} />
+            <Route path="/edit-order/:id" element={<EditOrder />} />
           </Route>
         </Route>
       </Routes>

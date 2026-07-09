@@ -5,6 +5,7 @@ import leadReducer from "../CreateSlice/LeadSlice.jsx";
 import customerSlice from "../CreateSlice/CustomerSlice.jsx";
 import quotationReducer from "../CreateSlice/QuotationSlice.jsx";
 import aiReducer from "../CreateSlice/AiSlice.jsx";
+import order from "../CreateSlice/OrderSlice.jsx";
 export const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -12,5 +13,6 @@ export const store = configureStore({
     customer: customerSlice,
     quotation: quotationReducer,
     ai: aiReducer,
+    order: order,
   },
 });

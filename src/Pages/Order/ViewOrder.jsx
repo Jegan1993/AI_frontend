@@ -1,71 +1,68 @@
 import React, { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
-import { FaEdit, FaTrash, FaPlus, FaSyncAlt, FaSearch } from "react-icons/fa";
+import { FaEdit, FaTrash, FaPlus, FaSearch, FaSyncAlt } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 import {
-  getQuotation,
-  deleteQuotation,
-  updateQuotationStatus,
-} from "../../CreateSlice/QuotationSlice";
+  getOrder,
+  deleteOrder,
+  updateOrderStatus,
+} from "../../CreateSlice/OrderSlice";
 
-function ViewQuotation() {
+function ViewOrder() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { quotations, loading, total, page, limit } = useSelector(
-    (state) => state.quotation,
-  );
+  const { order, loading } = useSelector((state) => state.order);
 
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    dispatch(
-      getQuotation({
-        page: 1,
-        limit: 10,
-      }),
-    );
+    dispatch(getOrder());
   }, [dispatch]);
 
   const handleRefresh = () => {
-    dispatch(
-      getQuotation({
-        page: 1,
-        limit: 10,
-      }),
-    );
+    dispatch(getOrder());
   };
 
   const handleCreate = () => {
-    navigate("/create-quotation");
+    navigate("/create-order");
   };
 
   const handleEdit = (row) => {
-    navigate(`/edit-quotation/${row._id}`);
+    navigate(`/edit-order/${row._id}`);
   };
 
   const handleDelete = async (id) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this quotation?",
-    );
+    if (!window.confirm("Are you sure you want to delete this order?")) return;
 
-    if (!confirmDelete) return;
+    const result = await dispatch(deleteOrder(id));
 
-    const result = await dispatch(deleteQuotation(id));
-
-    if (deleteQuotation.fulfilled.match(result)) {
-      dispatch(getQuotation());
+    if (deleteOrder.fulfilled.match(result)) {
+      dispatch(getOrder());
     }
   };
 
-  const filteredQuotation = quotations.filter((item) => {
+  const handleStatusChange = async (id, status) => {
+    const result = await dispatch(
+      updateOrderStatus({
+        id,
+        data: { status },
+      }),
+    );
+
+    if (updateOrderStatus.fulfilled.match(result)) {
+      dispatch(getOrder());
+    }
+  };
+
+  const filteredOrder = order.filter((item) => {
     const value = search.toLowerCase();
 
     return (
-      item.quotationNo?.toLowerCase().includes(value) ||
-      item.leadId?.companyName?.toLowerCase().includes(value) ||
+      item.orderNumber?.toLowerCase().includes(value) ||
+      item.customerId?.companyName?.toLowerCase().includes(value) ||
       item.status?.toLowerCase().includes(value)
     );
   });
@@ -74,14 +71,13 @@ function ViewQuotation() {
     {
       name: "S.No",
       width: "80px",
-      cell: (row, index) => (page - 1) * limit + index + 1,
+      cell: (row, index) => index + 1,
     },
 
     {
-      name: "Quotation No",
-      selector: (row) => row.quotationNo,
+      name: "Order No",
+      selector: (row) => row.orderNumber,
       sortable: true,
-      grow: 1.5,
     },
 
     {
@@ -91,24 +87,14 @@ function ViewQuotation() {
     },
 
     {
-      name: "Contact Person",
-      selector: (row) => row.customerId?.contactPerson || "--",
-    },
-
-    {
-      name: "Email",
-      selector: (row) => row.customerId?.email || "--",
-    },
-
-    {
-      name: "Grand Total",
-      selector: (row) => `₹ ${row.grandTotal?.toLocaleString()}`,
+      name: "Amount",
+      selector: (row) => `₹ ${row.totalAmount?.toLocaleString()}`,
       sortable: true,
     },
 
     {
-      name: "Valid Until",
-      selector: (row) => new Date(row.validUntil).toLocaleDateString("en-GB"),
+      name: "Order Date",
+      selector: (row) => new Date(row.orderDate).toLocaleDateString("en-GB"),
     },
 
     {
@@ -116,17 +102,29 @@ function ViewQuotation() {
       center: true,
       cell: (row) => (
         <select
+          className={`form-select form-select-sm
+          ${
+            row.status === "Delivered"
+              ? "border-success text-success"
+              : row.status === "Cancelled"
+                ? "border-danger text-danger"
+                : row.status === "Shipped"
+                  ? "border-primary text-primary"
+                  : row.status === "Packed"
+                    ? "border-info text-info"
+                    : row.status === "Confirmed"
+                      ? "border-warning text-warning"
+                      : "border-secondary"
+          }`}
           value={row.status}
-          onChange={(e) => {
-            handleStatusChange(row._id, e.target.value);
-          }}
+          onChange={(e) => handleStatusChange(row._id, e.target.value)}
         >
-          <option value="Draft">Draft</option>
-          <option value="Sent">Sent</option>
-          <option value="Viewed">Viewed</option>
-          <option value="Accepted">Accepted</option>
-          <option value="Rejected">Rejected</option>
-          <option value="Expired">Expired</option>
+          <option value="Pending">Pending</option>
+          <option value="Confirmed">Confirmed</option>
+          <option value="Packed">Packed</option>
+          <option value="Shipped">Shipped</option>
+          <option value="Delivered">Delivered</option>
+          <option value="Cancelled">Cancelled</option>
         </select>
       ),
     },
@@ -134,7 +132,7 @@ function ViewQuotation() {
     {
       name: "Action",
       center: true,
-      width: "170px",
+      width: "150px",
       cell: (row) => (
         <div className="d-flex gap-2">
           <button
@@ -154,21 +152,13 @@ function ViewQuotation() {
       ),
     },
   ];
-  const handleStatusChange = async (id, status) => {
-      const result = await dispatch(
-      updateQuotationStatus({
-        id,
-        status,
-      }),
-    );
-  };
 
   return (
     <div className="container-fluid mt-4">
       <div className="card shadow border-0">
         <div className="card-header bg-primary text-white">
           <div className="d-flex justify-content-between align-items-center flex-wrap">
-            <h4 className="mb-0">Quotation Management</h4>
+            <h4 className="mb-0">Order Management</h4>
 
             <div className="d-flex gap-2">
               <button className="btn btn-light" onClick={handleRefresh}>
@@ -180,7 +170,7 @@ function ViewQuotation() {
                 onClick={handleCreate}
               >
                 <FaPlus className="me-2" />
-                Create Quotation
+                Create Order
               </button>
             </div>
           </div>
@@ -197,7 +187,7 @@ function ViewQuotation() {
                 <input
                   type="text"
                   className="form-control"
-                  placeholder="Search quotation..."
+                  placeholder="Search Order..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                 />
@@ -205,22 +195,22 @@ function ViewQuotation() {
             </div>
 
             <div className="col-md-8 text-end">
-              <strong>Total Quotations : {filteredQuotation.length}</strong>
+              <strong>Total Orders : {filteredOrder.length}</strong>
             </div>
           </div>
 
           <DataTable
             columns={columns}
-            data={filteredQuotation}
+            data={filteredOrder}
             pagination
-            highlightOnHover
-            striped
             responsive
+            striped
+            highlightOnHover
             persistTableHead
             progressPending={loading}
             noDataComponent={
               <div className="py-5">
-                <h5>No Quotations Found</h5>
+                <h5>No Orders Found</h5>
               </div>
             }
           />
@@ -230,4 +220,4 @@ function ViewQuotation() {
   );
 }
 
-export default ViewQuotation;
+export default ViewOrder;

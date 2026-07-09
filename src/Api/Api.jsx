@@ -51,4 +51,29 @@ export const AuthApi = {
   updateQuotationStatus: (id, data) => {
     return ApiRequest.put(`/quotation/status/${id}`, data);
   },
+  // Order management
+
+  getOrder: (params) => ApiRequest.get("/get-order", params),
+
+  createOrder: (data) => ApiRequest.post("/create-order", data),
+
+  getOrderById: (id) => ApiRequest.get(`/get-order/${id}`),
+
+  updateOrder: (id, data) => ApiRequest.put(`update-order/${id}`, data),
+
+  deleteOrder: (id) => ApiRequest.delete(`/delete-order/${id}`),
+
+  getOrder: (params) => ApiRequest.get("/get-order", params),
+
+  createOrder: (data) => ApiRequest.post("/create-order", data),
+
+  getOrderById: (id) => ApiRequest.get(`/get-order/${id}`),
+
+  updateOrder: (id, data) => ApiRequest.put(`update-order/${id}`, data),
+
+  deleteOrder: (id) => ApiRequest.delete(`/delete-order/${id}`),
+
+  updateOrderStatus: (id, data) => {
+    return ApiRequest.put(`/order/status/${id}`, data);
+  },
 };
