@@ -37,7 +37,6 @@ export const getCustomerById = createAsyncThunk(
     try {
       const res = await AuthApi.getCustomerById(id);
 
-      console.log("API Response:", res.data);
 
       return res.data;
     } catch (error) {

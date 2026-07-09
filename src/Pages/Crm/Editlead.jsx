@@ -25,11 +25,9 @@ function EditLead() {
   const { lead, loading } = useSelector((state) => state.lead);
   const { id } = useParams();
 
-  console.log("Router id", id);
 
-  useEffect(() => {
-    console.log("Redux lead:", lead);
-  }, [lead]);
+  // useEffect(() => {
+  // }, [lead]);
 
   const handleChange = (e) => {
     setFormData((prev) => ({
@@ -49,7 +47,6 @@ function EditLead() {
         data: formData,
       }),
     );
-    console.log("result------", result);
 
     if (updateLeads.fulfilled.match(result)) {
       navigate("/lead");

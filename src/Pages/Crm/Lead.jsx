@@ -40,7 +40,6 @@ function Lead() {
   };
   const handleGenerateEmail = async (leadId) => {
     const result = await dispatch(generateEmail(leadId));
-    console.log("jhbjhcbjhbdsjchbsdjczjh", result.payload);
     if (generateEmail.fulfilled.match(result)) {
       setShowEmailModal(true);
     }

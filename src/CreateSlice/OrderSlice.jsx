@@ -35,7 +35,6 @@ export const getOrderById = createAsyncThunk(
     try {
       const res = await AuthApi.getOrderById(id);
 
-      console.log("API Response:", res.data);
 
       return res.data;
     } catch (error) {
