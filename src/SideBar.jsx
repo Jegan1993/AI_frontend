@@ -1,8 +1,12 @@
-import { NavLink, useLocation } from "react-router-dom";
-
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { logout } from "./CreateSlice/AuthSlice";
+import { useState } from "react";
 function SideBar() {
   const location = useLocation();
-  const abc = " hello welcome";
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [logoutHover, setLogoutHover] = useState(false);
   const dashboardActive = location.pathname === "/";
 
   const leadActive =
@@ -24,6 +28,8 @@ function SideBar() {
     location.pathname.startsWith("/create-order") ||
     location.pathname.startsWith("/edit-order");
 
+  const ShipmentAction = location.pathname.startsWith("/view-shipment");
+
   const linkStyle = (active) => ({
     display: "block",
     padding: "12px 16px",
@@ -34,7 +40,13 @@ function SideBar() {
     fontWeight: active ? "600" : "400",
     color: active ? "#000" : "#fff",
     transition: "0.3s",
+    cursor: "pointer",
   });
+
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate("/login");
+  };
 
   return (
     <div
@@ -62,9 +74,34 @@ function SideBar() {
       <NavLink to="/view-quotation" style={linkStyle(quotationActive)}>
         Quotation
       </NavLink>
+
       <NavLink to="/view-order" style={linkStyle(getorderActive)}>
         Order Management
       </NavLink>
+      <NavLink to="/view-shipment" style={linkStyle(ShipmentAction)}>
+        Shipment
+      </NavLink>
+      <button
+        onClick={handleLogout}
+        onMouseEnter={() => setLogoutHover(true)}
+        onMouseLeave={() => setLogoutHover(false)}
+        style={{
+          display: "block",
+          width: "100%",
+          padding: "12px 16px",
+          marginBottom: "10px",
+          border: "none",
+          borderRadius: "8px",
+          backgroundColor: logoutHover ? "#ffdf2a" : "transparent",
+          color: logoutHover ? "#000" : "#fff",
+          fontWeight: logoutHover ? "600" : "400",
+          textAlign: "left",
+          cursor: "pointer",
+          transition: "0.3s",
+        }}
+      >
+        Logout
+      </button>
     </div>
   );
 }

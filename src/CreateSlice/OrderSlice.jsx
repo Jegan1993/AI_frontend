@@ -1,11 +1,11 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { AuthApi } from "../Api/Api.jsx";
+import { API } from "../Api/Api.jsx";
 
 export const getOrder = createAsyncThunk(
   "order/get",
   async (data, thunkAPI) => {
     try {
-      const res = await AuthApi.getOrder(data);
+      const res = await API.getOrder(data);
 
       return res.data;
     } catch (error) {
@@ -18,7 +18,7 @@ export const createOrder = createAsyncThunk(
   "order/create",
   async (data, thunkAPI) => {
     try {
-      const res = await AuthApi.createOrder(data);
+      const res = await API.createOrder(data);
 
       return res.data;
     } catch (error) {
@@ -33,8 +33,7 @@ export const getOrderById = createAsyncThunk(
   "order/getById",
   async (id, thunkAPI) => {
     try {
-      const res = await AuthApi.getOrderById(id);
-
+      const res = await API.getOrderById(id);
 
       return res.data;
     } catch (error) {
@@ -50,7 +49,7 @@ export const updateOrder = createAsyncThunk(
   "order/update",
   async ({ id, data }, thunkAPI) => {
     try {
-      const res = await AuthApi.updateOrder(id, data);
+      const res = await API.updateOrder(id, data);
       return res.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -63,7 +62,7 @@ export const deleteOrder = createAsyncThunk(
   "order/delete",
   async (data, thunkAPI) => {
     try {
-      const res = await AuthApi.deleteOrder(data);
+      const res = await API.deleteOrder(data);
 
       return res.data;
     } catch (error) {
@@ -79,7 +78,7 @@ export const updateOrderStatus = createAsyncThunk(
   "order/updateStatus",
   async ({ id, data }, thunkAPI) => {
     try {
-      const res = await AuthApi.updateOrderStatus(id, data);
+      const res = await API.updateOrderStatus(id, data);
       return res.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -192,12 +191,10 @@ const orderSlice = createSlice({
         const index = state.order.findIndex(
           (item) => item._id === action.payload.data._id,
         );
-
         if (index !== -1) {
           state.order[index] = action.payload.data;
         }
       })
-
       .addCase(updateOrderStatus.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;

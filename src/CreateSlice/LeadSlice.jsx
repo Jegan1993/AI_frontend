@@ -1,9 +1,9 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { AuthApi } from "../Api/Api.jsx";
+import { API } from "../Api/Api.jsx";
 
 export const getLeads = createAsyncThunk("lead/get", async (data, thunkAPI) => {
   try {
-    const res = await AuthApi.getLead(data);
+    const res = await API.getLead(data);
 
     return res.data;
   } catch (error) {
@@ -15,7 +15,7 @@ export const createLeads = createAsyncThunk(
   "lead/create",
   async (data, thunkAPI) => {
     try {
-      const res = await AuthApi.createLead(data);
+      const res = await API.createLead(data);
       return res.data;
     } catch (error) {
       console.log(error);
@@ -30,8 +30,7 @@ export const getLeadById = createAsyncThunk(
   "lead/getById",
   async (id, thunkAPI) => {
     try {
-      const res = await AuthApi.getLeadById(id);
-
+      const res = await API.getLeadById(id);
 
       return res.data;
     } catch (error) {
@@ -47,7 +46,7 @@ export const updateLeads = createAsyncThunk(
   "lead/update",
   async ({ id, data }, thunkAPI) => {
     try {
-      const res = await AuthApi.updateLead(id, data);
+      const res = await API.updateLead(id, data);
       return res.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -60,7 +59,7 @@ export const deleteLeads = createAsyncThunk(
   "lead/delete",
   async (data, thunkAPI) => {
     try {
-      const res = await AuthApi.deleteLead(data);
+      const res = await API.deleteLead(data);
 
       return res.data;
     } catch (error) {

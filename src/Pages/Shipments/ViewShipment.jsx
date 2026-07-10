@@ -1,0 +1,261 @@
+import React, { useEffect, useState } from "react";
+import DataTable from "react-data-table-component";
+import { FaPlus, FaEdit, FaTrash, FaSearch, FaSyncAlt } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+
+import {
+  getShipments,
+  deleteShipment,
+  updateShipment,
+} from "../../CreateSlice/ShipmentSlice";
+
+function ViewShipment() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const {
+    shipments = [],
+    loading,
+    page,
+    limit,
+  } = useSelector((state) => state.shipment);
+
+  const [search, setSearch] = useState("");
+
+  useEffect(() => {
+    dispatch(
+      getShipments({
+        page: 1,
+        limit: 10,
+      }),
+    );
+  }, [dispatch]);
+
+  const handleRefresh = () => {
+    dispatch(
+      getShipments({
+        page: 1,
+        limit: 10,
+      }),
+    );
+  };
+
+  const handleCreate = () => {
+    navigate("/create-shipment");
+  };
+
+  const handleEdit = (row) => {
+    navigate(`/edit-shipment/${row._id}`);
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm("Delete this Shipment?")) return;
+
+    const result = await dispatch(deleteShipment(id));
+
+    if (deleteShipment.fulfilled.match(result)) {
+      dispatch(getShipments());
+    }
+  };
+
+  const handleStatusChange = async (id, status) => {
+    const result = await dispatch(
+      updateShipment({
+        id,
+        data: { status },
+      }),
+    );
+
+    if (updateShipment.fulfilled.match(result)) {
+      dispatch(getShipments());
+    }
+  };
+
+  const filteredShipment = shipments.filter((item) => {
+    const value = search.toLowerCase();
+
+    return (
+      item.shipmentNo?.toLowerCase().includes(value) ||
+      item.orderId?.orderNo?.toLowerCase().includes(value) ||
+      item.customerId?.companyName?.toLowerCase().includes(value) ||
+      item.carrier?.toLowerCase().includes(value) ||
+      item.trackingNo?.toLowerCase().includes(value) ||
+      item.status?.toLowerCase().includes(value)
+    );
+  });
+
+  const columns = [
+    {
+      name: "S.No",
+      width: "80px",
+      cell: (row, index) => (page - 1) * limit + index + 1,
+    },
+
+    {
+      name: "Shipment No",
+      selector: (row) => row.shipmentNo,
+      sortable: true,
+    },
+
+    {
+      name: "Order No",
+      selector: (row) => row.orderId?.orderNo || "--",
+    },
+
+    {
+      name: "Customer",
+      selector: (row) => row.customerId?.companyName || "--",
+      grow: 1.5,
+    },
+
+    {
+      name: "Carrier",
+      selector: (row) => row.carrier,
+    },
+
+    {
+      name: "Tracking No",
+      selector: (row) => row.trackingNo,
+    },
+
+    {
+      name: "Dispatch Date",
+      selector: (row) =>
+        row.dispatchDate
+          ? new Date(row.dispatchDate).toLocaleDateString("en-GB")
+          : "--",
+    },
+
+    {
+      name: "ETA",
+      selector: (row) =>
+        row.expectedDelivery
+          ? new Date(row.expectedDelivery).toLocaleDateString("en-GB")
+          : "--",
+    },
+
+    {
+      name: "Status",
+      center: true,
+      cell: (row) => (
+        <select
+          className={`form-select form-select-sm
+            ${
+              row.status === "Delivered"
+                ? "border-success text-success"
+                : row.status === "Cancelled"
+                  ? "border-danger text-danger"
+                  : row.status === "In Transit"
+                    ? "border-primary text-primary"
+                    : row.status === "Out For Delivery"
+                      ? "border-info text-info"
+                      : row.status === "Picked Up"
+                        ? "border-warning text-warning"
+                        : ""
+            }`}
+          value={row.status}
+          onChange={(e) => handleStatusChange(row._id, e.target.value)}
+        >
+          <option value="Pending">Pending</option>
+          <option value="Picked Up">Picked Up</option>
+          <option value="In Transit">In Transit</option>
+          <option value="Out For Delivery">Out For Delivery</option>
+          <option value="Delivered">Delivered</option>
+          <option value="Returned">Returned</option>
+          <option value="Cancelled">Cancelled</option>
+        </select>
+      ),
+    },
+
+    {
+      name: "Action",
+      center: true,
+      width: "160px",
+      cell: (row) => (
+        <div className="d-flex gap-2">
+          <button
+            className="btn btn-warning btn-sm"
+            onClick={() => handleEdit(row)}
+          >
+            <FaEdit />
+          </button>
+
+          <button
+            className="btn btn-danger btn-sm"
+            onClick={() => handleDelete(row._id)}
+          >
+            <FaTrash />
+          </button>
+        </div>
+      ),
+    },
+  ];
+
+  return (
+    <div className="container-fluid mt-4">
+      <div className="card shadow border-0">
+        <div className="card-header bg-primary text-white">
+          <div className="d-flex justify-content-between align-items-center">
+            <h4 className="mb-0">Shipment Management</h4>
+
+            <div className="d-flex gap-2">
+              <button className="btn btn-light" onClick={handleRefresh}>
+                <FaSyncAlt />
+              </button>
+
+              <button
+                className="btn btn-warning fw-bold"
+                onClick={handleCreate}
+              >
+                <FaPlus className="me-2" />
+                Create Shipment
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div className="card-body">
+          <div className="row mb-3">
+            <div className="col-md-4">
+              <div className="input-group">
+                <span className="input-group-text">
+                  <FaSearch />
+                </span>
+
+                <input
+                  className="form-control"
+                  placeholder="Search Shipment..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+              </div>
+            </div>
+
+            <div className="col-md-8 text-end">
+              <strong>Total Shipments : {filteredShipment.length}</strong>
+            </div>
+          </div>
+
+          <DataTable
+            columns={columns}
+            data={filteredShipment}
+            pagination
+            responsive
+            striped
+            highlightOnHover
+            persistTableHead
+            progressPending={loading}
+            noDataComponent={
+              <div className="py-5">
+                <h5>No Shipment Found</h5>
+              </div>
+            }
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default ViewShipment;

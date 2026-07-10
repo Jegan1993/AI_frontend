@@ -1,6 +1,6 @@
 import ApiRequest from "./MakeApi.jsx";
 
-export const AuthApi = {
+export const API = {
   register: (data) => {
     return ApiRequest.post("/register", data);
   },
@@ -76,4 +76,17 @@ export const AuthApi = {
   updateOrderStatus: (id, data) => {
     return ApiRequest.put(`/order/status/${id}`, data);
   },
+  //shipment api
+  getShipment: (params) => ApiRequest.get("/get-shipment", params),
+
+  createShipment: (data) => ApiRequest.post("/create-shipment", data),
+
+  getShipmentById: (id) => ApiRequest.get(`/get-shipment/${id}`),
+
+  updateShipment: (id, data) => ApiRequest.put(`/update-shipment/${id}`, data),
+
+  deleteShipment: (id) => ApiRequest.delete(`/delete-shipment/${id}`),
+
+  updateShipmentStatus: (id, data) =>
+    ApiRequest.put(`/shipment/status/${id}`, data),
 };

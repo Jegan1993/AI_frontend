@@ -21,6 +21,8 @@ import CreateQuoataion from "./Pages/Quotation/CreateQuoataion.jsx";
 import ViewOrder from "./Pages/Order/ViewOrder.jsx";
 import CreateOrder from "./Pages/Order/CreateOrder.jsx";
 import EditOrder from "./Pages/Order/EditOrder.jsx";
+import ViewShipment from "./Pages/Shipments/ViewShipment.jsx";
+import CreateShipment from "./Pages/Shipments/CreateShipment.jsx";
 
 function App() {
   return (
@@ -44,6 +46,8 @@ function App() {
             <Route path="/view-order" element={<ViewOrder />} />
             <Route path="/create-order" element={<CreateOrder />} />
             <Route path="/edit-order/:id" element={<EditOrder />} />
+            <Route path="/view-shipment" element={<ViewShipment />} />
+            <Route path="/create-shipment" element={<CreateShipment />} />
           </Route>
         </Route>
       </Routes>

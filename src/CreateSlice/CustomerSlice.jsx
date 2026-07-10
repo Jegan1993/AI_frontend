@@ -1,11 +1,11 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { AuthApi } from "../Api/Api.jsx";
+import { API } from "../Api/Api.jsx";
 
 export const getCustomer = createAsyncThunk(
   "customer/get",
   async (data, thunkAPI) => {
     try {
-      const res = await AuthApi.getCustomer(data);
+      const res = await API.getCustomer(data);
 
       return res.data;
     } catch (error) {
@@ -14,29 +14,25 @@ export const getCustomer = createAsyncThunk(
   },
 );
 
-
-
 export const createCustomer = createAsyncThunk(
   "customer/create",
   async (leadId, thunkAPI) => {
     try {
-      const res = await AuthApi.createCustomer(leadId);
+      const res = await API.createCustomer(leadId);
       return res.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || { message: error.message }
+        error.response?.data || { message: error.message },
       );
     }
-  }
+  },
 );
-
 
 export const getCustomerById = createAsyncThunk(
   "customer/getById",
   async (id, thunkAPI) => {
     try {
-      const res = await AuthApi.getCustomerById(id);
-
+      const res = await API.getCustomerById(id);
 
       return res.data;
     } catch (error) {
@@ -52,7 +48,7 @@ export const updateCustomer = createAsyncThunk(
   "customer/update",
   async ({ id, data }, thunkAPI) => {
     try {
-      const res = await AuthApi.updateCustomer(id, data);
+      const res = await API.updateCustomer(id, data);
       return res.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -65,7 +61,7 @@ export const deleteCustomer = createAsyncThunk(
   "customer/delete",
   async (data, thunkAPI) => {
     try {
-      const res = await AuthApi.deleteCustomer(data);
+      const res = await API.deleteCustomer(data);
 
       return res.data;
     } catch (error) {

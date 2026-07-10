@@ -1,11 +1,11 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { AuthApi } from "../Api/Api.jsx";
+import { API } from "../Api/Api.jsx";
 
 export const getQuotation = createAsyncThunk(
   "quotation/get",
   async (params, thunkAPI) => {
     try {
-      const res = await AuthApi.getQuotation(params);
+      const res = await API.getQuotation(params);
       return res.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -19,7 +19,7 @@ export const createQuotation = createAsyncThunk(
   "quotation/create",
   async (data, thunkAPI) => {
     try {
-      const res = await AuthApi.createQuotation(data);
+      const res = await API.createQuotation(data);
       return res.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -33,7 +33,7 @@ export const getQuotationById = createAsyncThunk(
   "quotation/getById",
   async (id, thunkAPI) => {
     try {
-      const res = await AuthApi.getQuotationById(id);
+      const res = await API.getQuotationById(id);
       return res.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -47,7 +47,7 @@ export const updateQuotation = createAsyncThunk(
   "quotation/update",
   async ({ id, data }, thunkAPI) => {
     try {
-      const res = await AuthApi.updateQuotation(id, data);
+      const res = await API.updateQuotation(id, data);
       return res.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -61,7 +61,7 @@ export const deleteQuotation = createAsyncThunk(
   "quotation/delete",
   async (id, thunkAPI) => {
     try {
-      const res = await AuthApi.deleteQuotation(id);
+      const res = await API.deleteQuotation(id);
       return res.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -74,14 +74,13 @@ export const updateQuotationStatus = createAsyncThunk(
   "quotation/updateQuotationStatus",
   async ({ id, status }, { rejectWithValue }) => {
     try {
-      const response = await AuthApi.updateQuotationStatus(id, {
+      const response = await API.updateQuotationStatus(id, {
         status,
       });
 
       return response.data.data;
     } catch (error) {
       console.log(error);
-    
 
       return rejectWithValue(
         error.response?.data?.message || "Failed to update quotation status",
