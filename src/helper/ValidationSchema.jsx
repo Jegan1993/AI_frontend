@@ -1,18 +1,13 @@
 import * as Yup from "yup";
 
 export const orderValidationSchema = Yup.object({
-  orderNumber: Yup.string()
-    .trim()
-    .required("Order Number is required"),
+  orderNumber: Yup.string().trim().required("Order Number is required"),
 
-  orderDate: Yup.date()
-    .required("Order Date is required"),
+  orderDate: Yup.date().required("Order Date is required"),
 
-  quotationId: Yup.string()
-    .required("Quotation is required"),
+  quotationId: Yup.string().required("Quotation is required"),
 
-  customerId: Yup.string()
-    .required("Customer is required"),
+  customerId: Yup.string().required("Customer is required"),
 
   deliveryAddress: Yup.string()
     .trim()
@@ -25,7 +20,7 @@ export const orderValidationSchema = Yup.object({
     .required("Payment Method is required"),
 
   paymentStatus: Yup.string()
-    .oneOf(["Pending", "Paid", "Partially Paid"])
+    .oneOf(["Pending", "Paid", "Partial"])
     .required("Payment Status is required"),
 
   totalAmount: Yup.number()
@@ -33,7 +28,5 @@ export const orderValidationSchema = Yup.object({
     .min(1, "Total Amount must be greater than 0")
     .required("Total Amount is required"),
 
-  notes: Yup.string()
-    .trim()
-    .max(500, "Notes cannot exceed 500 characters"),
+  notes: Yup.string().trim().max(500, "Notes cannot exceed 500 characters"),
 });

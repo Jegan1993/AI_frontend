@@ -9,8 +9,10 @@ import { orderValidationSchema } from "../../helper/ValidationSchema";
 function OrderForm({ initialValues, onSubmit, buttonText = "Save Order" }) {
   const dispatch = useDispatch();
 
-  const customers = useSelector((state) => state.customer.customer || []);
+  const customers = useSelector((state) => state.customer.customers || []);
 
+  console.log("customers", customers);
+  
   const quotations = useSelector((state) => state.quotation.quotations || []);
 
   useEffect(() => {
@@ -20,15 +22,20 @@ function OrderForm({ initialValues, onSubmit, buttonText = "Save Order" }) {
 
   const formik = useFormik({
     enableReinitialize: true,
-
     initialValues,
-
     validationSchema: orderValidationSchema,
 
     onSubmit: (values) => {
+      console.log("Submitted");
+      console.log("values", values);
       onSubmit(values);
     },
   });
+
+  useEffect(() => {
+    console.log("Errors:", formik.errors);
+    console.log("Touched:", formik.touched);
+  }, [formik.errors, formik.touched]);
 
   const handleQuotationChange = (e) => {
     const quotationId = e.target.value;
@@ -53,7 +60,13 @@ function OrderForm({ initialValues, onSubmit, buttonText = "Save Order" }) {
         </div>
 
         <div className="card-body">
-          <form onSubmit={formik.handleSubmit}>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              console.log("Form Submitted");
+              formik.handleSubmit(e);
+            }}
+          >
             <div className="row">
               {/* Order Number */}
 
@@ -62,15 +75,15 @@ function OrderForm({ initialValues, onSubmit, buttonText = "Save Order" }) {
 
                 <input
                   type="text"
-                  name="orderNo"
+                  name="orderNumber"
                   className="form-control"
-                  value={formik.values.orderNo}
+                  value={formik.values.orderNumber}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                 />
 
-                {formik.touched.orderNo && formik.errors.orderNo && (
-                  <small className="text-danger">{formik.errors.orderNo}</small>
+                {formik.touched.orderNumber && formik.errors.orderNumber && (
+                  <small className="text-danger">{formik.errors.orderNumber}</small>
                 )}
               </div>
 
@@ -237,7 +250,11 @@ function OrderForm({ initialValues, onSubmit, buttonText = "Save Order" }) {
             </div>
 
             <div className="text-end">
-              <button type="submit" className="btn btn-success">
+              <button
+                type="submit"
+                className="btn btn-success"
+                onClick={() => console.log("Button Clicked")}
+              >
                 {buttonText}
               </button>
             </div>

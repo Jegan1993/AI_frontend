@@ -7,16 +7,35 @@ function ShipmentForm({ formData, setFormData, onSubmit, buttonText }) {
   const dispatch = useDispatch();
 
   const orders = useSelector((state) => state.order.order || []);
-
+  console.log("orders", orders);
   useEffect(() => {
     dispatch(getOrder());
   }, [dispatch]);
+
+  useEffect(() => {
+    console.log(orders);
+  }, [orders]);
 
   const handleChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    console.log("Submit Clicked");
+    console.log(formData);
+
+    const result = await dispatch(createShipment(formData));
+
+    console.log(result);
+
+    if (createShipment.fulfilled.match(result)) {
+      navigate("/view-shipment");
+    }
   };
 
   const handleOrderChange = (e) => {
@@ -69,7 +88,7 @@ function ShipmentForm({ formData, setFormData, onSubmit, buttonText }) {
                     .filter((item) => item.status !== "Cancelled")
                     .map((item) => (
                       <option key={item._id} value={item._id}>
-                        {item.orderNo}
+                        {item.orderNumber}
                       </option>
                     ))}
                 </select>
@@ -166,7 +185,10 @@ function ShipmentForm({ formData, setFormData, onSubmit, buttonText }) {
             </div>
 
             <div className="text-end">
-              <button className="btn btn-success px-4">{buttonText}</button>
+              {/* <button className="btn btn-success px-4">{buttonText}</button> */}
+              <button type="submit" className="btn btn-success px-4">
+                {buttonText}
+              </button>
             </div>
           </form>
         </div>

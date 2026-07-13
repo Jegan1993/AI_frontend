@@ -15,7 +15,7 @@ function ViewOrder() {
   const navigate = useNavigate();
 
   const { order, loading } = useSelector((state) => state.order);
-
+  console.log("order", order);
   const [search, setSearch] = useState("");
 
   useEffect(() => {

@@ -10,7 +10,7 @@ function CreateOrder() {
   const navigate = useNavigate();
 
   const initialValues = {
-    orderNo: Date.now().toString(),
+    orderNumber: Date.now().toString(),
     orderDate: new Date().toISOString().split("T")[0],
     quotationId: "",
     customerId: "",
@@ -20,10 +20,14 @@ function CreateOrder() {
     totalAmount: 0,
     notes: "",
   };
-  
 
   const handleSubmit = async (values) => {
+    console.log("Parent Submit");
+    console.log(values);
+
     const result = await dispatch(createOrder(values));
+
+    console.log(result);
 
     if (createOrder.fulfilled.match(result)) {
       navigate("/view-order");

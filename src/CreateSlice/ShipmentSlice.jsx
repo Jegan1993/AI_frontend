@@ -1,12 +1,11 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { API } from "../Api/Api";
 
-
 export const getShipments = createAsyncThunk(
   "shipment/get",
   async (params, thunkAPI) => {
     try {
-      const response = await API.getShipments(params);
+      const response = await API.getShipment(params);
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -15,13 +14,13 @@ export const getShipments = createAsyncThunk(
     }
   },
 );
-
 
 export const createShipment = createAsyncThunk(
   "shipment/create",
   async (data, thunkAPI) => {
     try {
       const response = await API.createShipment(data);
+      console.log("response", response);
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -30,7 +29,6 @@ export const createShipment = createAsyncThunk(
     }
   },
 );
-
 
 export const getShipmentById = createAsyncThunk(
   "shipment/getById",
@@ -46,7 +44,6 @@ export const getShipmentById = createAsyncThunk(
   },
 );
 
-
 export const updateShipment = createAsyncThunk(
   "shipment/update",
   async ({ id, data }, thunkAPI) => {
@@ -60,7 +57,6 @@ export const updateShipment = createAsyncThunk(
     }
   },
 );
-
 
 export const deleteShipment = createAsyncThunk(
   "shipment/delete",
@@ -76,7 +72,6 @@ export const deleteShipment = createAsyncThunk(
   },
 );
 
-
 const initialState = {
   shipments: [],
   selectedShipment: null,
@@ -87,7 +82,6 @@ const initialState = {
   limit: 10,
 };
 
-
 const shipmentSlice = createSlice({
   name: "shipment",
   initialState,
@@ -95,7 +89,6 @@ const shipmentSlice = createSlice({
 
   extraReducers: (builder) => {
     builder
-
 
       .addCase(getShipments.pending, (state) => {
         state.loading = true;
@@ -116,7 +109,6 @@ const shipmentSlice = createSlice({
         state.error = action.payload;
       })
 
-
       .addCase(createShipment.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -132,7 +124,6 @@ const shipmentSlice = createSlice({
         state.error = action.payload;
       })
 
-
       .addCase(getShipmentById.pending, (state) => {
         state.loading = true;
       })
@@ -146,7 +137,6 @@ const shipmentSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-
 
       .addCase(updateShipment.pending, (state) => {
         state.loading = true;
@@ -164,7 +154,6 @@ const shipmentSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-
 
       .addCase(deleteShipment.pending, (state) => {
         state.loading = true;

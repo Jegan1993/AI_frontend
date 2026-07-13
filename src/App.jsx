@@ -23,6 +23,7 @@ import CreateOrder from "./Pages/Order/CreateOrder.jsx";
 import EditOrder from "./Pages/Order/EditOrder.jsx";
 import ViewShipment from "./Pages/Shipments/ViewShipment.jsx";
 import CreateShipment from "./Pages/Shipments/CreateShipment.jsx";
+import EditShipment from "./Pages/Shipments/EditShipment.jsx";
 
 function App() {
   return (
@@ -48,6 +49,7 @@ function App() {
             <Route path="/edit-order/:id" element={<EditOrder />} />
             <Route path="/view-shipment" element={<ViewShipment />} />
             <Route path="/create-shipment" element={<CreateShipment />} />
+            <Route path="/edit-shipment" element={<EditShipment />} />
           </Route>
         </Route>
       </Routes>

@@ -31,7 +31,8 @@ export default function Login() {
 
       navigate("/");
     } else {
-      toast.error(result.payload?.message || "Login Failed");
+      toast.error(result.payload?.message);
+      navigate("/login");
     }
   };
 

@@ -77,14 +77,14 @@ function ViewShipment() {
 
     return (
       item.shipmentNo?.toLowerCase().includes(value) ||
-      item.orderId?.orderNo?.toLowerCase().includes(value) ||
+      item.orderId?.orderNumber?.toLowerCase().includes(value) ||
       item.customerId?.companyName?.toLowerCase().includes(value) ||
       item.carrier?.toLowerCase().includes(value) ||
-      item.trackingNo?.toLowerCase().includes(value) ||
+      item.trackingNumber?.toLowerCase().includes(value) ||
       item.status?.toLowerCase().includes(value)
     );
   });
-
+  console.log("filteredShipment", filteredShipment);
   const columns = [
     {
       name: "S.No",
@@ -100,7 +100,7 @@ function ViewShipment() {
 
     {
       name: "Order No",
-      selector: (row) => row.orderId?.orderNo || "--",
+      selector: (row) => row.orderId?.orderNumber || "--",
     },
 
     {
@@ -110,8 +110,8 @@ function ViewShipment() {
     },
 
     {
-      name: "Carrier",
-      selector: (row) => row.carrier,
+      name: "courierName",
+      selector: (row) => row.courierName,
     },
 
     {
