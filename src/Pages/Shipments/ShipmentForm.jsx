@@ -1,41 +1,26 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
 import { getOrder } from "../../CreateSlice/OrderSlice";
 
 function ShipmentForm({ formData, setFormData, onSubmit, buttonText }) {
   const dispatch = useDispatch();
 
-  const orders = useSelector((state) => state.order.order || []);
-  console.log("orders", orders);
+  // const orders = useSelector((state) => state.order.orders || []);
+  // console.log("orders", orders);
+
+  const orders = useSelector((state) => state.order.order ?? []);
+
+  console.log("Orders:", orders);
+
   useEffect(() => {
     dispatch(getOrder());
   }, [dispatch]);
-
-  useEffect(() => {
-    console.log(orders);
-  }, [orders]);
 
   const handleChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    console.log("Submit Clicked");
-    console.log(formData);
-
-    const result = await dispatch(createShipment(formData));
-
-    console.log(result);
-
-    if (createShipment.fulfilled.match(result)) {
-      navigate("/view-shipment");
-    }
   };
 
   const handleOrderChange = (e) => {
@@ -48,8 +33,8 @@ function ShipmentForm({ formData, setFormData, onSubmit, buttonText }) {
     setFormData({
       ...formData,
       orderId,
-      customerId: order.customerId?._id,
-      shippingAddress: order.deliveryAddress || "",
+      customerId: order.customerId?._id || "",
+      routeTo: order.deliveryAddress || "",
     });
   };
 
@@ -78,19 +63,21 @@ function ShipmentForm({ formData, setFormData, onSubmit, buttonText }) {
                 <label>Select Order</label>
 
                 <select
+                  name="orderId"
                   className="form-select"
                   value={formData.orderId}
                   onChange={handleOrderChange}
                 >
                   <option value="">Select Order</option>
 
-                  {orders
-                    .filter((item) => item.status !== "Cancelled")
-                    .map((item) => (
-                      <option key={item._id} value={item._id}>
-                        {item.orderNumber}
-                      </option>
-                    ))}
+                  {orders.length > 0 &&
+                    orders
+                      .filter((item) => item.status !== "Cancelled")
+                      .map((item) => (
+                        <option key={item._id} value={item._id}>
+                          {item.orderNumber}
+                        </option>
+                      ))}
                 </select>
               </div>
 
@@ -99,31 +86,31 @@ function ShipmentForm({ formData, setFormData, onSubmit, buttonText }) {
 
                 <input
                   className="form-control"
-                  name="trackingNo"
-                  value={formData.trackingNo}
+                  name="trackingNumber"
+                  value={formData.trackingNumber}
                   onChange={handleChange}
                 />
               </div>
 
               <div className="col-md-6 mb-3">
-                <label>Carrier</label>
+                <label>Courier Name</label>
 
                 <input
                   className="form-control"
-                  name="carrier"
-                  value={formData.carrier}
+                  name="courierName"
+                  value={formData.courierName}
                   onChange={handleChange}
                 />
               </div>
 
               <div className="col-md-6 mb-3">
-                <label>Dispatch Date</label>
+                <label>Shipment Date</label>
 
                 <input
                   type="date"
                   className="form-control"
-                  name="dispatchDate"
-                  value={formData.dispatchDate}
+                  name="shipmentDate"
+                  value={formData.shipmentDate}
                   onChange={handleChange}
                 />
               </div>
@@ -140,14 +127,24 @@ function ShipmentForm({ formData, setFormData, onSubmit, buttonText }) {
                 />
               </div>
 
-              <div className="col-md-12 mb-3">
-                <label>Shipping Address</label>
+              <div className="col-md-6 mb-3">
+                <label>Route From</label>
 
-                <textarea
-                  rows="3"
+                <input
                   className="form-control"
-                  name="shippingAddress"
-                  value={formData.shippingAddress}
+                  name="routeFrom"
+                  value={formData.routeFrom}
+                  onChange={handleChange}
+                />
+              </div>
+
+              <div className="col-md-6 mb-3">
+                <label>Route To</label>
+
+                <input
+                  className="form-control"
+                  name="routeTo"
+                  value={formData.routeTo}
                   onChange={handleChange}
                 />
               </div>
@@ -161,31 +158,30 @@ function ShipmentForm({ formData, setFormData, onSubmit, buttonText }) {
                   value={formData.status}
                   onChange={handleChange}
                 >
-                  <option>Pending</option>
-                  <option>Picked Up</option>
-                  <option>In Transit</option>
-                  <option>Out For Delivery</option>
-                  <option>Delivered</option>
-                  <option>Returned</option>
-                  <option>Cancelled</option>
+                  <option value="Created">Created</option>
+                  <option value="Picked Up">Picked Up</option>
+                  <option value="In Transit">In Transit</option>
+                  <option value="Out For Delivery">Out For Delivery</option>
+                  <option value="Delivered">Delivered</option>
+                  <option value="Returned">Returned</option>
+                  <option value="Cancelled">Cancelled</option>
                 </select>
               </div>
 
               <div className="col-md-12 mb-3">
-                <label>Notes</label>
+                <label>Remarks</label>
 
                 <textarea
                   rows="4"
                   className="form-control"
-                  name="notes"
-                  value={formData.notes}
+                  name="remarks"
+                  value={formData.remarks}
                   onChange={handleChange}
                 />
               </div>
             </div>
 
             <div className="text-end">
-              {/* <button className="btn btn-success px-4">{buttonText}</button> */}
               <button type="submit" className="btn btn-success px-4">
                 {buttonText}
               </button>

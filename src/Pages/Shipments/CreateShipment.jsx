@@ -13,13 +13,14 @@ function CreateShipment() {
     shipmentNo: `SHP-${Date.now()}`,
     orderId: "",
     customerId: "",
-    trackingNo: "",
-    carrier: "",
-    dispatchDate: "",
+    trackingNumber: `DL-${Date.now()}`,
+    courierName: "",
+    shipmentDate: "",
     expectedDelivery: "",
-    shippingAddress: "",
-    status: "Pending",
-    notes: "",
+    routeFrom: "",
+    routeTo: "",
+    status: "Created",
+    remarks: "",
   });
 
   const handleSubmit = async (e) => {

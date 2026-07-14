@@ -12,13 +12,15 @@ function OrderForm({ initialValues, onSubmit, buttonText = "Save Order" }) {
   const customers = useSelector((state) => state.customer.customers || []);
 
   console.log("customers", customers);
-  
+
   const quotations = useSelector((state) => state.quotation.quotations || []);
 
   useEffect(() => {
     dispatch(getCustomer());
     dispatch(getQuotation());
   }, [dispatch]);
+
+
 
   const formik = useFormik({
     enableReinitialize: true,
@@ -83,7 +85,9 @@ function OrderForm({ initialValues, onSubmit, buttonText = "Save Order" }) {
                 />
 
                 {formik.touched.orderNumber && formik.errors.orderNumber && (
-                  <small className="text-danger">{formik.errors.orderNumber}</small>
+                  <small className="text-danger">
+                    {formik.errors.orderNumber}
+                  </small>
                 )}
               </div>
 

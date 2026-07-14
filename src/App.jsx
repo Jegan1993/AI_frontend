@@ -49,7 +49,7 @@ function App() {
             <Route path="/edit-order/:id" element={<EditOrder />} />
             <Route path="/view-shipment" element={<ViewShipment />} />
             <Route path="/create-shipment" element={<CreateShipment />} />
-            <Route path="/edit-shipment" element={<EditShipment />} />
+            <Route path="/edit-shipment/:id" element={<EditShipment />} />
           </Route>
         </Route>
       </Routes>

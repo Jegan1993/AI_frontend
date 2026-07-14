@@ -16,16 +16,17 @@ function EditShipment() {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    shipmentNo: "",
+    shipmentNo: `SHP-${Date.now()}`,
     orderId: "",
     customerId: "",
-    trackingNo: "",
-    carrier: "",
-    dispatchDate: "",
+    trackingNumber: `DL-${Date.now()}`,
+    courierName: "",
+    shipmentDate: "",
     expectedDelivery: "",
-    shippingAddress: "",
-    status: "Pending",
-    notes: "",
+    routeFrom: "",
+    routeTo: "",
+    status: "Created",
+    remarks: "",
   });
 
   useEffect(() => {

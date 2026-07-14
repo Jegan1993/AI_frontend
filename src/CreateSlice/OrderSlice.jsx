@@ -6,7 +6,7 @@ export const getOrder = createAsyncThunk(
   async (data, thunkAPI) => {
     try {
       const res = await API.getOrder(data);
-
+      console.log("Order API Response", res.data);
       return res.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data);
@@ -107,14 +107,22 @@ const orderSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
+      // .addCase(getOrder.fulfilled, (state, action) => {
+      //   state.loading = false;
+      //   state.order = action.payload.data.orders;
+      //   state.total = action.payload.data.total;
+      //   state.page = action.payload.data.page;
+      //   state.limit = action.payload.data.limit;
+      // })
       .addCase(getOrder.fulfilled, (state, action) => {
+        console.log("Reducer Fulfilled:", action.payload);
+
         state.loading = false;
         state.order = action.payload.data.orders;
         state.total = action.payload.data.total;
         state.page = action.payload.data.page;
         state.limit = action.payload.data.limit;
       })
-
       .addCase(getOrder.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;

@@ -79,12 +79,11 @@ function ViewShipment() {
       item.shipmentNo?.toLowerCase().includes(value) ||
       item.orderId?.orderNumber?.toLowerCase().includes(value) ||
       item.customerId?.companyName?.toLowerCase().includes(value) ||
-      item.carrier?.toLowerCase().includes(value) ||
+      item.courierName?.toLowerCase().includes(value) ||
       item.trackingNumber?.toLowerCase().includes(value) ||
       item.status?.toLowerCase().includes(value)
     );
   });
-  console.log("filteredShipment", filteredShipment);
   const columns = [
     {
       name: "S.No",
@@ -94,36 +93,39 @@ function ViewShipment() {
 
     {
       name: "Shipment No",
-      selector: (row) => row.shipmentNo,
+      selector: (row) => row.shipmentNo || "--",
       sortable: true,
     },
 
     {
       name: "Order No",
       selector: (row) => row.orderId?.orderNumber || "--",
+      sortable: true,
     },
 
     {
       name: "Customer",
       selector: (row) => row.customerId?.companyName || "--",
-      grow: 1.5,
+      sortable: true,
     },
 
     {
-      name: "courierName",
-      selector: (row) => row.courierName,
+      name: "Courier",
+      selector: (row) => row.courierName || "--",
+      sortable: true,
     },
 
     {
       name: "Tracking No",
-      selector: (row) => row.trackingNo,
+      selector: (row) => row.trackingNumber || "--",
+      sortable: true,
     },
 
     {
-      name: "Dispatch Date",
+      name: "Shipment Date",
       selector: (row) =>
-        row.dispatchDate
-          ? new Date(row.dispatchDate).toLocaleDateString("en-GB")
+        row.shipmentDate
+          ? new Date(row.shipmentDate).toLocaleDateString("en-GB")
           : "--",
     },
 
@@ -136,28 +138,20 @@ function ViewShipment() {
     },
 
     {
+      name: "Current Location",
+      selector: (row) => row.currentLocation || "--",
+    },
+
+    {
       name: "Status",
       center: true,
       cell: (row) => (
         <select
-          className={`form-select form-select-sm
-            ${
-              row.status === "Delivered"
-                ? "border-success text-success"
-                : row.status === "Cancelled"
-                  ? "border-danger text-danger"
-                  : row.status === "In Transit"
-                    ? "border-primary text-primary"
-                    : row.status === "Out For Delivery"
-                      ? "border-info text-info"
-                      : row.status === "Picked Up"
-                        ? "border-warning text-warning"
-                        : ""
-            }`}
+          className="form-select form-select-sm"
           value={row.status}
           onChange={(e) => handleStatusChange(row._id, e.target.value)}
         >
-          <option value="Pending">Pending</option>
+          <option value="Created">Created</option>
           <option value="Picked Up">Picked Up</option>
           <option value="In Transit">In Transit</option>
           <option value="Out For Delivery">Out For Delivery</option>

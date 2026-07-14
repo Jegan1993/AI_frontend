@@ -1,35 +1,41 @@
 import { useNavigate, useParams } from "react-router-dom";
-import OrderForm from "./OrderForm";
 import { useDispatch, useSelector } from "react-redux";
-import { getOrderById, updateOrder } from "../../CreateSlice/OrderSlice.jsx";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+
+import OrderForm from "./OrderForm";
+import { getOrderById, updateOrder } from "../../CreateSlice/OrderSlice";
+
 function EditOrder() {
   const { id } = useParams();
 
   const dispatch = useDispatch();
-
   const navigate = useNavigate();
 
   const { selectedOrder } = useSelector((state) => state.order);
 
-  const [formData, setFormData] = useState({});
   useEffect(() => {
     dispatch(getOrderById(id));
-  }, []);
+  }, [dispatch, id]);
 
-  useEffect(() => {
-    if (selectedOrder) {
-      setFormData(selectedOrder);
-    }
-  }, [selectedOrder]);
+  const initialValues = {
+    orderNumber: selectedOrder?.orderNumber || "",
+    orderDate: selectedOrder?.orderDate
+      ? selectedOrder.orderDate.split("T")[0]
+      : "",
+    quotationId: selectedOrder?.quotationId?._id || "",
+    customerId: selectedOrder?.customerId?._id || "",
+    deliveryAddress: selectedOrder?.deliveryAddress || "",
+    paymentMethod: selectedOrder?.paymentMethod || "Cash",
+    paymentStatus: selectedOrder?.paymentStatus || "Pending",
+    totalAmount: selectedOrder?.totalAmount || 0,
+    notes: selectedOrder?.notes || "",
+  };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
+  const handleSubmit = async (values) => {
     const result = await dispatch(
       updateOrder({
         id,
-        data: formData,
+        data: values,
       }),
     );
 
@@ -40,8 +46,7 @@ function EditOrder() {
 
   return (
     <OrderForm
-      formData={formData}
-      setFormData={setFormData}
+      initialValues={initialValues}
       onSubmit={handleSubmit}
       buttonText="Update Order"
     />
