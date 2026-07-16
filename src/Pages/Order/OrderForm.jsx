@@ -5,6 +5,7 @@ import { useFormik } from "formik";
 import { getCustomer } from "../../CreateSlice/CustomerSlice";
 import { getQuotation } from "../../CreateSlice/QuotationSlice";
 import { orderValidationSchema } from "../../helper/ValidationSchema";
+import { useNavigate } from "react-router-dom";
 
 function OrderForm({ initialValues, onSubmit, buttonText = "Save Order" }) {
   const dispatch = useDispatch();
@@ -14,13 +15,11 @@ function OrderForm({ initialValues, onSubmit, buttonText = "Save Order" }) {
   console.log("customers", customers);
 
   const quotations = useSelector((state) => state.quotation.quotations || []);
-
+  const navigate = useNavigate();
   useEffect(() => {
     dispatch(getCustomer());
     dispatch(getQuotation());
   }, [dispatch]);
-
-
 
   const formik = useFormik({
     enableReinitialize: true,
@@ -55,7 +54,15 @@ function OrderForm({ initialValues, onSubmit, buttonText = "Save Order" }) {
   };
 
   return (
-    <div className="container mt-4">
+    <div className="container">
+      <div className="d-flex justify-content-end mt-4">
+        <button
+          className="btn btn-secondary"
+          onClick={() => navigate("/view-order")}
+        >
+          Back
+        </button>
+      </div>
       <div className="card shadow">
         <div className="card-header bg-primary text-white">
           <h4>{buttonText}</h4>

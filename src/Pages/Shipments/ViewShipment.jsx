@@ -1,13 +1,20 @@
 import React, { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
-import { FaPlus, FaEdit, FaTrash, FaSearch, FaSyncAlt } from "react-icons/fa";
+import {
+  FaPlus,
+  FaEdit,
+  FaTrash,
+  FaSearch,
+  FaSyncAlt,
+  FaMapMarkedAlt,
+} from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-
 import {
   getShipments,
   deleteShipment,
   updateShipment,
+  updateShipmentStatus,
 } from "../../CreateSlice/ShipmentSlice";
 
 function ViewShipment() {
@@ -48,7 +55,9 @@ function ViewShipment() {
   const handleEdit = (row) => {
     navigate(`/edit-shipment/${row._id}`);
   };
-
+  const handleTrack = (row) => {
+    navigate(`/route-monitoring/${row._id}`);
+  };
   const handleDelete = async (id) => {
     if (!window.confirm("Delete this Shipment?")) return;
 
@@ -61,12 +70,13 @@ function ViewShipment() {
 
   const handleStatusChange = async (id, status) => {
     const result = await dispatch(
-      updateShipment({
+      updateShipmentStatus({
         id,
-        data: { status },
+        data: {
+          status,
+        },
       }),
     );
-
     if (updateShipment.fulfilled.match(result)) {
       dispatch(getShipments());
     }
@@ -165,9 +175,17 @@ function ViewShipment() {
     {
       name: "Action",
       center: true,
-      width: "160px",
+      width: "220px",
       cell: (row) => (
         <div className="d-flex gap-2">
+          <button
+            className="btn btn-primary btn-sm"
+            onClick={() => handleTrack(row)}
+            title="Track Route"
+          >
+            <FaMapMarkedAlt />
+          </button>
+
           <button
             className="btn btn-warning btn-sm"
             onClick={() => handleEdit(row)}

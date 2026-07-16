@@ -6,7 +6,8 @@ import customerSlice from "../CreateSlice/CustomerSlice.jsx";
 import quotationReducer from "../CreateSlice/QuotationSlice.jsx";
 import aiReducer from "../CreateSlice/AiSlice.jsx";
 import order from "../CreateSlice/OrderSlice.jsx";
-import shipment from "../CreateSlice/ShipmentSlice.jsx"
+import shipment from "../CreateSlice/ShipmentSlice.jsx";
+import notificationReducer from "../CreateSlice/NotificationSlice.jsx";
 export const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -16,5 +17,6 @@ export const store = configureStore({
     ai: aiReducer,
     order: order,
     shipment: shipment,
+    notification: notificationReducer,
   },
 });

@@ -71,6 +71,32 @@ export const deleteShipment = createAsyncThunk(
     }
   },
 );
+export const updateShipmentStatus = createAsyncThunk(
+  "shipment/updateStatus",
+  async ({ id, data }, thunkAPI) => {
+    try {
+      const response = await API.updateShipmentStatus(id, data);
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data || { message: error.message },
+      );
+    }
+  },
+);
+
+export const updateRouteLocation = createAsyncThunk(
+  "shipment/updateRouteLocation",
+  async ({ id, data }, thunkAPI) => {
+    try {
+      const response = await API.updateRouteLocation(id, data);
+
+      return response.data;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err.response.data);
+    }
+  },
+);
 
 const initialState = {
   shipments: [],
@@ -168,6 +194,33 @@ const shipmentSlice = createSlice({
       })
 
       .addCase(deleteShipment.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(updateShipmentStatus.fulfilled, (state, action) => {
+        state.loading = false;
+
+        state.shipments = state.shipments.map((item) =>
+          item._id === action.payload.data._id ? action.payload.data : item,
+        );
+      })
+      .addCase(updateRouteLocation.pending, (state) => {
+        state.loading = true;
+      })
+
+      .addCase(updateRouteLocation.fulfilled, (state, action) => {
+        state.loading = false;
+
+        state.shipments = state.shipments.map((item) =>
+          item._id === action.payload.data.shipment._id
+            ? action.payload.data.shipment
+            : item,
+        );
+
+        state.selectedShipment = action.payload.data.shipment;
+      })
+
+      .addCase(updateRouteLocation.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

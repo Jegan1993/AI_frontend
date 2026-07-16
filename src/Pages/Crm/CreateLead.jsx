@@ -77,7 +77,7 @@ function CreateLead() {
   return (
     <div className="container py-4">
       <div className="d-flex justify-content-end mb-3">
-        <button className="btn btn-primary" onClick={handleAddButtonClick}>
+        <button className="btn btn-secondary" onClick={handleAddButtonClick}>
           Back
         </button>
       </div>

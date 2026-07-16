@@ -1,5 +1,6 @@
 import axios from "axios";
 import { env } from "../Utils/env.js";
+
 const API = axios.create({
   baseURL: `${env.backendEndPoint}/api`,
 });
@@ -14,26 +15,29 @@ API.interceptors.request.use((config) => {
   return config;
 });
 
+API.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem("token");
+
+      window.location.href = "/login";
+    }
+
+    return Promise.reject(error);
+  },
+);
+
 const ApiRequest = {
-  get: (url, params = {}) => {
-    return API.get(url, { params });
-  },
+  get: (url, params = {}) => API.get(url, { params }),
 
-  post: (url, data = {}) => {
-    return API.post(url, data);
-  },
+  post: (url, data = {}) => API.post(url, data),
 
-  put: (url, data = {}) => {
-    return API.put(url, data);
-  },
+  put: (url, data = {}) => API.put(url, data),
 
-  patch: (url, data = {}) => {
-    return API.patch(url, data);
-  },
+  patch: (url, data = {}) => API.patch(url, data),
 
-  delete: (url) => {
-    return API.delete(url);
-  },
+  delete: (url) => API.delete(url),
 };
 
 export default ApiRequest;

@@ -24,6 +24,7 @@ import EditOrder from "./Pages/Order/EditOrder.jsx";
 import ViewShipment from "./Pages/Shipments/ViewShipment.jsx";
 import CreateShipment from "./Pages/Shipments/CreateShipment.jsx";
 import EditShipment from "./Pages/Shipments/EditShipment.jsx";
+import RouteMonitoring from "./Pages/ RouteMonitoring/ RouteMonitoring.jsx";
 
 function App() {
   return (
@@ -50,6 +51,7 @@ function App() {
             <Route path="/view-shipment" element={<ViewShipment />} />
             <Route path="/create-shipment" element={<CreateShipment />} />
             <Route path="/edit-shipment/:id" element={<EditShipment />} />
+            <Route path="/route-monitoring/:id" element={<RouteMonitoring />} />
           </Route>
         </Route>
       </Routes>

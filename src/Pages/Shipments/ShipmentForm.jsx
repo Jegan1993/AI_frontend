@@ -1,9 +1,11 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getOrder } from "../../CreateSlice/OrderSlice";
+import { useNavigate } from "react-router-dom";
 
 function ShipmentForm({ formData, setFormData, onSubmit, buttonText }) {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   // const orders = useSelector((state) => state.order.orders || []);
   // console.log("orders", orders);
@@ -40,6 +42,14 @@ function ShipmentForm({ formData, setFormData, onSubmit, buttonText }) {
 
   return (
     <div className="container mt-4">
+      <div className="d-flex justify-content-end mt-4">
+        <button
+          className="btn btn-secondary"
+          onClick={() => navigate("/view-shipment")}
+        >
+          Back
+        </button>
+      </div>
       <div className="card shadow">
         <div className="card-header bg-primary text-white">
           <h4>{buttonText}</h4>
@@ -117,7 +127,7 @@ function ShipmentForm({ formData, setFormData, onSubmit, buttonText }) {
 
               <div className="col-md-6 mb-3">
                 <label>Expected Delivery</label>
-
+              
                 <input
                   type="date"
                   className="form-control"
@@ -125,7 +135,7 @@ function ShipmentForm({ formData, setFormData, onSubmit, buttonText }) {
                   value={formData.expectedDelivery}
                   onChange={handleChange}
                 />
-              </div>
+              </div>   
 
               <div className="col-md-6 mb-3">
                 <label>Route From</label>
@@ -137,6 +147,7 @@ function ShipmentForm({ formData, setFormData, onSubmit, buttonText }) {
                   onChange={handleChange}
                 />
               </div>
+
 
               <div className="col-md-6 mb-3">
                 <label>Route To</label>

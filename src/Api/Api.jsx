@@ -79,4 +79,12 @@ export const API = {
 
   updateShipmentStatus: (id, data) =>
     ApiRequest.put(`/shipment/status/${id}`, data),
+  updateRouteLocation: (id, data) =>
+    ApiRequest.put(`/shipment/location/${id}`, data),
+  //Notification
+  getNotifications: (params) => ApiRequest.get("/notifications", params),
+
+  markAsRead: (id) => ApiRequest.put(`/notification/read/${id}`),
+
+  deleteNotification: (id) => ApiRequest.delete(`/notification/${id}`),
 };
