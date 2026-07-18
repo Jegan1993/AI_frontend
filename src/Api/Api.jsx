@@ -87,4 +87,20 @@ export const API = {
   markAsRead: (id) => ApiRequest.put(`/notification/read/${id}`),
 
   deleteNotification: (id) => ApiRequest.delete(`/notification/${id}`),
+
+  //wareHouse
+  getWarehouse: () => ApiRequest.get("/get-warehouse"),
+
+  createWarehouse: (data) => ApiRequest.post("/create-warehouse", data),
+
+  getWarehouseById: (id) => ApiRequest.get(`/get-warehouse/${id}`),
+
+  updateWarehouse: (id, data) =>
+    ApiRequest.put(`/update-warehouse/${id}`, data),
+
+  deleteWarehouse: (id) => ApiRequest.delete(`/delete-warehouse/${id}`),
+
+  warehouseAnalytics: () => ApiRequest.get("/warehouse/analytics"),
+
+  warehouseCapacity: (id) => ApiRequest.get(`/warehouse/capacity/${id}`),
 };

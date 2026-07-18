@@ -28,7 +28,12 @@ function SideBar() {
     location.pathname.startsWith("/create-order") ||
     location.pathname.startsWith("/edit-order");
 
-  const ShipmentAction = location.pathname.startsWith("/view-shipment");
+  const shipmentActive =
+    location.pathname.startsWith("/view-shipment") ||
+    location.pathname.startsWith("/create-shipment") ||
+    location.pathname.startsWith("/edit-shipment");
+
+  const wareHouseActive = location.pathname.startsWith("/view-warehouse");
 
   const linkStyle = (active) => ({
     display: "block",
@@ -78,8 +83,11 @@ function SideBar() {
       <NavLink to="/view-order" style={linkStyle(getorderActive)}>
         Order Management
       </NavLink>
-      <NavLink to="/view-shipment" style={linkStyle(ShipmentAction)}>
+      <NavLink to="/view-shipment" style={linkStyle(shipmentActive)}>
         Shipment
+      </NavLink>
+      <NavLink to="/view-warehouse" style={linkStyle(wareHouseActive)}>
+        wareHouse
       </NavLink>
       <button
         onClick={handleLogout}

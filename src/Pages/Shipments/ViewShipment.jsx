@@ -205,7 +205,7 @@ function ViewShipment() {
   ];
 
   return (
-    <div className="container-fluid mt-4">
+    <div className="container mt-4">
       <div className="card shadow border-0">
         <div className="card-header bg-primary text-white">
           <div className="d-flex justify-content-between align-items-center">

@@ -1,28 +1,37 @@
 import React, { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
-import { FaEdit, FaTrash, FaPlus, FaSyncAlt, FaSearch } from "react-icons/fa";
+import {
+  FaPlus,
+  FaEdit,
+  FaTrash,
+  FaEye,
+  FaSearch,
+  FaSyncAlt,
+} from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 import {
-  getQuotation,
-  deleteQuotation,
-  updateQuotationStatus,
-} from "../../CreateSlice/QuotationSlice";
+  getWarehouses,
+  deleteWarehouse,
+} from "../CreateSlice/WareHouseSlice.jsx";
 
-function ViewQuotation() {
+function ViewWarehouse() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { quotations, loading, total, page, limit } = useSelector(
-    (state) => state.quotation,
-  );
+  const {
+    warehouses = [],
+    loading,
+    page,
+    limit,
+  } = useSelector((state) => state.warehouse);
 
   const [search, setSearch] = useState("");
 
   useEffect(() => {
     dispatch(
-      getQuotation({
+      getWarehouses({
         page: 1,
         limit: 10,
       }),
@@ -31,42 +40,31 @@ function ViewQuotation() {
 
   const handleRefresh = () => {
     dispatch(
-      getQuotation({
+      getWarehouses({
         page: 1,
         limit: 10,
       }),
     );
   };
 
-  const handleCreate = () => {
-    navigate("/create-quotation");
-  };
-
-  const handleEdit = (row) => {
-    navigate(`/edit-quotation/${row._id}`);
-  };
-
   const handleDelete = async (id) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this quotation?",
-    );
+    if (!window.confirm("Delete Warehouse?")) return;
 
-    if (!confirmDelete) return;
+    const result = await dispatch(deleteWarehouse(id));
 
-    const result = await dispatch(deleteQuotation(id));
-
-    if (deleteQuotation.fulfilled.match(result)) {
-      dispatch(getQuotation());
+    if (deleteWarehouse.fulfilled.match(result)) {
+      handleRefresh();
     }
   };
 
-  const filteredQuotation = quotations.filter((item) => {
+  const filteredWarehouse = warehouses.filter((item) => {
     const value = search.toLowerCase();
 
     return (
-      item.quotationNo?.toLowerCase().includes(value) ||
-      item.leadId?.companyName?.toLowerCase().includes(value) ||
-      item.status?.toLowerCase().includes(value)
+      item.warehouseName?.toLowerCase().includes(value) ||
+      item.warehouseCode?.toLowerCase().includes(value) ||
+      item.managerName?.toLowerCase().includes(value) ||
+      item.city?.toLowerCase().includes(value)
     );
   });
 
@@ -78,68 +76,79 @@ function ViewQuotation() {
     },
 
     {
-      name: "Quotation No",
-      selector: (row) => row.quotationNo,
-      sortable: true,
-      grow: 1.5,
-    },
-
-    {
-      name: "Customer",
-      selector: (row) => row.customerId?.companyName || "--",
+      name: "Warehouse",
+      selector: (row) => row.warehouseName,
       sortable: true,
     },
 
     {
-      name: "Contact Person",
-      selector: (row) => row.customerId?.contactPerson || "--",
+      name: "Code",
+      selector: (row) => row.warehouseCode,
+      sortable: true,
+    },
+
+    {
+      name: "Manager",
+      selector: (row) => row.managerName || "--",
     },
 
     {
       name: "Email",
-      selector: (row) => row.customerId?.email || "--",
+      selector: (row) => row.email || "--",
     },
 
     {
-      name: "Grand Total",
-      selector: (row) => `₹ ${row.grandTotal?.toLocaleString()}`,
-      sortable: true,
+      name: "Phone",
+      selector: (row) => row.phone || "--",
     },
 
     {
-      name: "Valid Until",
-      selector: (row) => new Date(row.validUntil).toLocaleDateString("en-GB"),
+      name: "City",
+      selector: (row) => row.city,
+    },
+
+    {
+      name: "Capacity",
+      selector: (row) => row.capacity,
+      center: true,
+    },
+
+    {
+      name: "Available",
+      selector: (row) => row.availableSpace,
+      center: true,
     },
 
     {
       name: "Status",
       center: true,
       cell: (row) => (
-        <select
-          value={row.status}
-          onChange={(e) => {
-            handleStatusChange(row._id, e.target.value);
-          }}
+        <span
+          className={`badge ${
+            row.status === "Active" ? "bg-success" : "bg-danger"
+          }`}
         >
-          <option value="Draft">Draft</option>
-          <option value="Sent">Sent</option>
-          <option value="Viewed">Viewed</option>
-          <option value="Accepted">Accepted</option>
-          <option value="Rejected">Rejected</option>
-          <option value="Expired">Expired</option>
-        </select>
+          {row.status}
+        </span>
       ),
     },
 
     {
       name: "Action",
+      width: "180px",
       center: true,
-      width: "170px",
       cell: (row) => (
         <div className="d-flex gap-2">
           <button
+            className="btn btn-info btn-sm"
+            onClick={() => navigate(`/warehouse-details/${row._id}`)}
+          >
+            <FaEye />
+          </button>
+
+          <button
             className="btn btn-warning btn-sm"
-            onClick={() => handleEdit(row)}
+            onClick={() => navigate(`/edit-warehouse/${row._id}`)}
           >
             <FaEdit />
           </button>
@@ -154,21 +163,13 @@ function ViewQuotation() {
       ),
     },
   ];
-  const handleStatusChange = async (id, status) => {
-      const result = await dispatch(
-      updateQuotationStatus({
-        id,
-        status,
-      }),
-    );
-  };
 
   return (
     <div className="container mt-4">
       <div className="card shadow border-0">
         <div className="card-header bg-primary text-white">
-          <div className="d-flex justify-content-between align-items-center flex-wrap">
-            <h4 className="mb-0">Quotation Management</h4>
+          <div className="d-flex justify-content-between align-items-center">
+            <h4 className="mb-0">Warehouse Management</h4>
 
             <div className="d-flex gap-2">
               <button className="btn btn-light" onClick={handleRefresh}>
@@ -177,10 +178,10 @@ function ViewQuotation() {
 
               <button
                 className="btn btn-warning fw-bold"
-                onClick={handleCreate}
+                onClick={() => navigate("/create-warehouse")}
               >
                 <FaPlus className="me-2" />
-                Create Quotation
+                Create Warehouse
               </button>
             </div>
           </div>
@@ -195,9 +196,8 @@ function ViewQuotation() {
                 </span>
 
                 <input
-                  type="text"
                   className="form-control"
-                  placeholder="Search quotation..."
+                  placeholder="Search Warehouse..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                 />
@@ -205,22 +205,22 @@ function ViewQuotation() {
             </div>
 
             <div className="col-md-8 text-end">
-              <strong>Total Quotations : {filteredQuotation.length}</strong>
+              <strong>Total Warehouses : {filteredWarehouse.length}</strong>
             </div>
           </div>
 
           <DataTable
             columns={columns}
-            data={filteredQuotation}
+            data={filteredWarehouse}
             pagination
-            highlightOnHover
-            striped
             responsive
+            striped
+            highlightOnHover
             persistTableHead
             progressPending={loading}
             noDataComponent={
               <div className="py-5">
-                <h5>No Quotations Found</h5>
+                <h5>No Warehouse Found</h5>
               </div>
             }
           />
@@ -230,4 +230,4 @@ function ViewQuotation() {
   );
 }
 
-export default ViewQuotation;
+export default ViewWarehouse;

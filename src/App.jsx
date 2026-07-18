@@ -25,7 +25,10 @@ import ViewShipment from "./Pages/Shipments/ViewShipment.jsx";
 import CreateShipment from "./Pages/Shipments/CreateShipment.jsx";
 import EditShipment from "./Pages/Shipments/EditShipment.jsx";
 import RouteMonitoring from "./Pages/ RouteMonitoring/ RouteMonitoring.jsx";
-
+import ViewWarehouse from "./Warehouse/ViewWarehouse.jsx";
+import CreateWarehouse from "./Warehouse/CreateWarehouse.jsx";
+import EditWarehouse from "./Warehouse/EditWarehouse.jsx";
+import WarehouseDetails from "./Warehouse/WarehouseDetails.jsx";
 function App() {
   return (
     <BrowserRouter>
@@ -52,6 +55,14 @@ function App() {
             <Route path="/create-shipment" element={<CreateShipment />} />
             <Route path="/edit-shipment/:id" element={<EditShipment />} />
             <Route path="/route-monitoring/:id" element={<RouteMonitoring />} />
+            <Route path="/view-warehouse" element={<ViewWarehouse />} />
+            <Route path="/create-warehouse" element={<CreateWarehouse />} />
+            <Route path="/edit-warehouse/:id" element={<EditWarehouse />} />
+            <Route path="/warehouse/:id" element={<WarehouseDetails />} />
+            <Route
+              path="/warehouse-details/:id"
+              element={<WarehouseDetails />}
+            />
           </Route>
         </Route>
       </Routes>

@@ -15,10 +15,12 @@ import {
   generateLeadScore,
   generateEmail,
   clearEmail,
+  generateProposal,
 } from "../../CreateSlice/AiSlice";
 function Lead() {
   const [showModal, setShowModal] = useState(false);
   const [showEmailModal, setShowEmailModal] = useState(false);
+  const [showProposalModal, setShowProposalModal] = useState(false);
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
@@ -30,7 +32,9 @@ function Lead() {
     leadScore,
     loading: aiLoading,
     email,
+    proposal,
   } = useSelector((state) => state.ai);
+
   const handleAiScore = async (id) => {
     const result = await dispatch(generateLeadScore(id));
 
@@ -44,11 +48,20 @@ function Lead() {
       setShowEmailModal(true);
     }
   };
+  const handleGenerateProposal = async (leadId) => {
+    const result = await dispatch(generateProposal(leadId));
+
+    if (generateProposal.fulfilled.match(result)) {
+      setShowProposalModal(true);
+    }
+  };
+  
   const closeEmailModal = () => {
     setShowEmailModal(false);
 
     dispatch(clearEmail());
   };
+
   useEffect(() => {
     dispatch(getLeads());
   }, [dispatch]);
@@ -143,22 +156,6 @@ function Lead() {
             <FaTrash />
           </button>
 
-          <button
-            className="btn btn-info btn-sm text-nowrap"
-            onClick={() => handleAiScore(row._id)}
-            title="AI Score"
-          >
-            AI Score
-          </button>
-
-          <button
-            className="btn btn-primary btn-sm text-nowrap"
-            onClick={() => handleGenerateEmail(row._id)}
-            title="AI Email"
-          >
-            AI Email
-          </button>
-
           {row.isConverted ? (
             <span className="badge bg-success px-3 py-2">Converted</span>
           ) : row.status === "Won" ? (
@@ -176,6 +173,38 @@ function Lead() {
         </div>
       ),
     },
+    {
+      name: "AI Action",
+      center: true,
+      minWidth: "420px",
+      cell: (row) => (
+        <div className="d-flex align-items-center gap-2 flex-wrap">
+          <button
+            className="btn btn-info btn-sm text-nowrap"
+            onClick={() => handleAiScore(row._id)}
+            title="AI Score"
+          >
+            AI Score
+          </button>
+
+          <button
+            className="btn btn-dark btn-sm text-nowrap"
+            onClick={() => handleGenerateProposal(row._id)}
+            title="AI Proposal"
+          >
+            AI Proposal
+          </button>
+
+          <button
+            className="btn btn-primary btn-sm text-nowrap"
+            onClick={() => handleGenerateEmail(row._id)}
+            title="AI Email"
+          >
+            AI Email
+          </button>
+        </div>
+      ),
+    },
   ];
   const handleEdit = (row) => {
     navigate(`/edit-lead/${row._id}`);
@@ -184,6 +213,7 @@ function Lead() {
   const handleDelete = async (id) => {
     await dispatch(deleteLeads(id));
   };
+
   const handleAddButtonClick = () => {
     navigate("/create-lead");
   };
@@ -332,6 +362,61 @@ function Lead() {
                   <button
                     className="btn btn-secondary"
                     onClick={() => setShowEmailModal(false)}
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+        {showProposalModal && proposal && (
+          <div
+            className="modal fade show d-block"
+            style={{ backgroundColor: "rgba(0,0,0,.5)" }}
+          >
+            <div className="modal-dialog modal-xl">
+              <div className="modal-content">
+                <div className="modal-header bg-dark text-white">
+                  <h5>AI Proposal Generator</h5>
+
+                  <button
+                    className="btn-close btn-close-white"
+                    onClick={() => {
+                      setShowProposalModal(false);
+                      dispatch(clearProposal());
+                    }}
+                  ></button>
+                </div>
+
+                <div className="modal-body">
+                  <h3>{proposal.title}</h3>
+
+                  <hr />
+
+                  <h5>Introduction</h5>
+                  <p>{proposal.introduction}</p>
+
+                  <h5>Solution</h5>
+                  <p>{proposal.solution}</p>
+
+                  <h5>Timeline</h5>
+                  <p>{proposal.timeline}</p>
+
+                  <h5>Pricing</h5>
+                  <p>{proposal.pricing}</p>
+
+                  <h5>Conclusion</h5>
+                  <p>{proposal.conclusion}</p>
+                </div>
+
+                <div className="modal-footer">
+                  <button
+                    className="btn btn-secondary"
+                    onClick={() => {
+                      setShowProposalModal(false);
+                      dispatch(clearProposal());
+                    }}
                   >
                     Close
                   </button>
