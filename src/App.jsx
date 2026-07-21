@@ -29,6 +29,13 @@ import ViewWarehouse from "./Warehouse/ViewWarehouse.jsx";
 import CreateWarehouse from "./Warehouse/CreateWarehouse.jsx";
 import EditWarehouse from "./Warehouse/EditWarehouse.jsx";
 import WarehouseDetails from "./Warehouse/WarehouseDetails.jsx";
+import WareHouseAnalysis from "./Warehouse/WareHouseAnalysis.jsx";
+import ViewInventory from "./Warehouse/ViewInventory.jsx";
+import ViewStock from "./Warehouse/ViewStock.jsx";
+import CreateInventory from "./Warehouse/CreateInventory.jsx";
+import EditInventory from "./Warehouse/EditInventory.jsx";
+import StockIn from "./Warehouse/StockIn.jsx";
+import StockOut from "./Warehouse/StockOut.jsx";
 function App() {
   return (
     <BrowserRouter>
@@ -63,6 +70,16 @@ function App() {
               path="/warehouse-details/:id"
               element={<WarehouseDetails />}
             />
+            <Route path="/warehouse-analysis" element={<WareHouseAnalysis />} />
+            <Route path="/inventory-create" element={<CreateInventory />} />
+            <Route path="/view-inventory" element={<ViewInventory />} />
+            <Route path="/view-stock" element={<ViewStock />} />
+            <Route path="/warehouse-analysis" element={<WareHouseAnalysis />} />
+            <Route path="/inventory-edit/:id" element={<EditInventory />} />
+            import StockIn from "./Pages/StockIn"; import StockOut from
+            "./Pages/StockOut";
+            <Route path="/stock/in/:id" element={<StockIn />} />
+            <Route path="/stock/out/:id" element={<StockOut />} />
           </Route>
         </Route>
       </Routes>

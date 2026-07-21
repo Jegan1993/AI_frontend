@@ -159,6 +159,7 @@ function ViewWarehouse() {
           >
             <FaTrash />
           </button>
+        
         </div>
       ),
     },

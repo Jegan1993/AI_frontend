@@ -55,7 +55,7 @@ function Lead() {
       setShowProposalModal(true);
     }
   };
-  
+
   const closeEmailModal = () => {
     setShowEmailModal(false);
 
@@ -415,7 +415,6 @@ function Lead() {
                     className="btn btn-secondary"
                     onClick={() => {
                       setShowProposalModal(false);
-                      dispatch(clearProposal());
                     }}
                   >
                     Close

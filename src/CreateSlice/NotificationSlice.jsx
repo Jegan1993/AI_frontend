@@ -6,8 +6,6 @@ export const getNotifications = createAsyncThunk(
     try {
       const response = await API.getNotifications();
 
-      console.log(response.data);
-
       return response.data.data.notifications;
     } catch (err) {
       console.log(err.response);

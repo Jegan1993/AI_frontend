@@ -9,6 +9,8 @@ import order from "../CreateSlice/OrderSlice.jsx";
 import shipment from "../CreateSlice/ShipmentSlice.jsx";
 import notificationReducer from "../CreateSlice/NotificationSlice.jsx";
 import warehouseReducer from "../CreateSlice/WareHouseSlice.jsx";
+import InventoryReducer from "../CreateSlice/InventorySlice.jsx";
+import StockReducer from "../CreateSlice/StockSlice.jsx";
 export const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -20,5 +22,7 @@ export const store = configureStore({
     shipment: shipment,
     notification: notificationReducer,
     warehouse: warehouseReducer,
+    inventory: InventoryReducer,
+    stock: StockReducer,
   },
 });

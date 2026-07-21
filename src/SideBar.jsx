@@ -6,6 +6,7 @@ function SideBar() {
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [warehouseOpen, setWarehouseOpen] = useState(false);
   const [logoutHover, setLogoutHover] = useState(false);
   const dashboardActive = location.pathname === "/";
 
@@ -33,7 +34,14 @@ function SideBar() {
     location.pathname.startsWith("/create-shipment") ||
     location.pathname.startsWith("/edit-shipment");
 
-  const wareHouseActive = location.pathname.startsWith("/view-warehouse");
+  const wareHouseActive =
+    location.pathname.startsWith("/view-warehouse") ||
+    location.pathname.startsWith("/view-inventory") ||
+    location.pathname.startsWith("/create-inventory") ||
+    location.pathname.startsWith("/edit-inventory") ||
+    location.pathname.startsWith("/view-stock") ||
+    location.pathname.startsWith("/create-stock") ||
+    location.pathname.startsWith("/edit-stock");
 
   const linkStyle = (active) => ({
     display: "block",
@@ -86,9 +94,48 @@ function SideBar() {
       <NavLink to="/view-shipment" style={linkStyle(shipmentActive)}>
         Shipment
       </NavLink>
-      <NavLink to="/view-warehouse" style={linkStyle(wareHouseActive)}>
-        wareHouse
-      </NavLink>
+      <div>
+        <div
+          onClick={() => setWarehouseOpen(!warehouseOpen)}
+          style={linkStyle(wareHouseActive)}
+        >
+          Warehouse {warehouseOpen ? "▲" : "▼"}
+        </div>
+
+        {warehouseOpen && (
+          <div style={{ marginLeft: "15px" }}>
+            <NavLink
+              to="/view-warehouse"
+              style={linkStyle(location.pathname.startsWith("/view-warehouse"))}
+            >
+              Warehouse List
+            </NavLink>
+
+            <NavLink
+              to="/view-inventory"
+              style={linkStyle(location.pathname.startsWith("/view-inventory"))}
+            >
+              Inventory
+            </NavLink>
+
+            <NavLink
+              to="/view-stock"
+              style={linkStyle(location.pathname.startsWith("/view-stock"))}
+            >
+              Stock
+            </NavLink>
+
+            <NavLink
+              to="/warehouse-analysis"
+              style={linkStyle(
+                location.pathname.startsWith("/warehouse-analysis"),
+              )}
+            >
+              Analytics
+            </NavLink>
+          </div>
+        )}
+      </div>
       <button
         onClick={handleLogout}
         onMouseEnter={() => setLogoutHover(true)}
