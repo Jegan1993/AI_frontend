@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { createInventory } from "../CreateSlice/InventorySlice.jsx";
 
 import { getWarehouses } from "../CreateSlice/WareHouseSlice.jsx";
-
+import { getBin } from "../CreateSlice/BinSlice";
 function CreateInventory() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -16,13 +16,19 @@ function CreateInventory() {
   const { warehouses } = useSelector((state) => state.warehouse);
 
   // console.log("warehouse", warehouses);
-
+  const { bins } = useSelector((state) => state.bin);
+  console.log("bins", bins);
+  useEffect(() => {
+    dispatch(getWarehouses());
+    dispatch(getBin());
+  }, [dispatch]);
   useEffect(() => {
     dispatch(getWarehouses());
   }, [dispatch]);
 
   const initialValues = {
     warehouseId: "",
+    binId: "",
     productName: "",
     sku: "",
     category: "",
@@ -35,6 +41,7 @@ function CreateInventory() {
 
   const validationSchema = Yup.object({
     warehouseId: Yup.string().required("Warehouse is required"),
+    binId: Yup.string().required("Bin is required"),
     productName: Yup.string().required("Product Name is required"),
     sku: Yup.string().required("SKU is required"),
     category: Yup.string().required("Category is required"),
@@ -58,7 +65,7 @@ function CreateInventory() {
   };
 
   return (
-    <Card className="shadow-sm">
+    <Card className="shadow-mt-4">
       <Card.Header>
         <h4>Create Inventory</h4>
       </Card.Header>
@@ -101,7 +108,27 @@ function CreateInventory() {
                     {touched.warehouseId && errors.warehouseId}
                   </small>
                 </Col>
+                <Col md={6} className="mb-3">
+                  <Form.Label>Bin</Form.Label>
 
+                  <Form.Select
+                    name="binId"
+                    value={values.binId}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                  >
+                    <option value="">Select Bin</option>
+                    {bins?.map((item) => (
+                      <option key={item._id} value={item._id}>
+                        {item.binCode}
+                      </option>
+                    ))}
+                  </Form.Select>
+
+                  <small className="text-danger">
+                    {touched.binId && errors.binId}
+                  </small>
+                </Col>
                 <Col md={6} className="mb-3">
                   <Form.Label>Product Name</Form.Label>
 
@@ -231,9 +258,24 @@ function CreateInventory() {
                 </Col> */}
               </Row>
 
-              <Button variant="primary" type="submit">
-                Create Inventory
-              </Button>
+              <div className="d-flex justify-content-end gap-2 mt-3">
+                <Button
+                  variant="primary"
+                  type="submit"
+                  style={{ width: "160px" }}
+                >
+                  Create Inventory
+                </Button>
+
+                <Button
+                  variant="secondary"
+                  type="button"
+                  style={{ width: "120px" }}
+                  onClick={() => navigate("/view-inventory")}
+                >
+                  Back
+                </Button>
+              </div>
             </Form>
           )}
         </Formik>

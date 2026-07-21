@@ -78,9 +78,23 @@ export const deleteInventory = createAsyncThunk(
     }
   },
 );
+export const InventoryForecasting = createAsyncThunk(
+  "inventory/InventoryForecasting",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await API.InventoryForecasting(id);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to fetch inventory",
+      );
+    }
+  },
+);
 const initialState = {
   inventories: [],
   inventory: null,
+  forecast: null,
   loading: false,
   error: null,
 };
@@ -188,6 +202,20 @@ const inventorySlice = createSlice({
         );
       })
       .addCase(deleteInventory.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(InventoryForecasting.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+
+      .addCase(InventoryForecasting.fulfilled, (state, action) => {
+        state.loading = false;
+        state.forecast = action.payload.data;
+      })
+
+      .addCase(InventoryForecasting.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

@@ -26,7 +26,7 @@ function ViewStock() {
     },
     {
       name: "Warehouse",
-      selector: (row) => row.inventoryId?.warehouseId?.warehouseName || "--",
+      selector: (row) => row.warehouseId?.warehouseName || "--",
       sortable: true,
     },
     {

@@ -17,7 +17,7 @@ function Navbar() {
     dispatch(getNotifications());
   }, [dispatch]);
 
-  const unread = notifications.filter((x) => !x.isRead).length;
+  const unread = notifications.filter((item) => !item.isRead).length;
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -35,35 +35,82 @@ function Navbar() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
   return (
     <nav
-      className="navbar navbar-expand-lg shadow-sm px-4"
+      className="navbar navbar-expand-lg px-4 py-3"
       style={{
-        background: "#0d6efd",
-        minHeight: "65px",
+        background: "linear-gradient(135deg,#0f172a,#1d4ed8,#2563eb)",
+        boxShadow: "0 10px 30px rgba(0,0,0,0.15)",
+        position: "sticky",
+        top: 0,
+        zIndex: 1050,
       }}
     >
       <div className="container-fluid">
-        <h4 className="text-white fw-bold mb-0">AI Logistics CRM</h4>
+        {/* Left */}
+        <div className="d-flex align-items-center">
+          <div
+            className="d-flex justify-content-center align-items-center rounded-circle me-3"
+            style={{
+              width: "50px",
+              height: "50px",
+              background: "rgba(255,255,255,0.15)",
+              backdropFilter: "blur(10px)",
+              fontSize: "24px",
+            }}
+          >
+            🚚
+          </div>
 
+          <div>
+            <h4 className="text-white fw-bold mb-0">AI Logistics CRM</h4>
+
+            <small
+              style={{
+                color: "rgba(255,255,255,0.75)",
+              }}
+            >
+              Smart Supply Chain Management
+            </small>
+          </div>
+        </div>
+
+        {/* Right */}
         <div className="ms-auto position-relative" ref={notificationRef}>
           <button
-            className="btn bg-white rounded-circle shadow-sm"
+            className="btn border-0 rounded-circle position-relative"
             style={{
-              width: "45px",
-              height: "45px",
+              width: "55px",
+              height: "55px",
+              background: "rgba(255,255,255,0.15)",
+              backdropFilter: "blur(10px)",
+              transition: "0.3s",
             }}
             onClick={() => setShow((prev) => !prev)}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = "rgba(255,255,255,0.25)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = "rgba(255,255,255,0.15)";
+            }}
           >
-            <FaBell size={20} color="#144eed" />
+            <FaBell size={22} color="#fff" />
           </button>
 
           {unread > 0 && (
             <span
               className="position-absolute badge rounded-pill bg-danger"
               style={{
-                top: "-5px",
-                right: "-5px",
+                top: "4px",
+                right: "4px",
+                minWidth: "22px",
+                height: "22px",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                fontSize: "11px",
+                border: "2px solid #fff",
               }}
             >
               {unread}
@@ -72,11 +119,11 @@ function Navbar() {
 
           {show && (
             <div
-              className="position-absolute bg-white rounded shadow"
+              className="position-absolute"
               style={{
-                top: "60px",
+                top: "70px",
                 right: "0",
-                width: "380px",
+                width: "390px",
                 zIndex: 9999,
               }}
             >

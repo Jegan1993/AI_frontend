@@ -36,6 +36,10 @@ import CreateInventory from "./Warehouse/CreateInventory.jsx";
 import EditInventory from "./Warehouse/EditInventory.jsx";
 import StockIn from "./Warehouse/StockIn.jsx";
 import StockOut from "./Warehouse/StockOut.jsx";
+import ViewBin from "./Warehouse/ViewBin.jsx";
+import EditBin from "./Warehouse/EditBin.jsx";
+import CreateBin from "./Warehouse/CreateBin.jsx";
+import InventoryForecaste from "./Warehouse/InventoryForecaste.jsx";
 function App() {
   return (
     <BrowserRouter>
@@ -76,10 +80,15 @@ function App() {
             <Route path="/view-stock" element={<ViewStock />} />
             <Route path="/warehouse-analysis" element={<WareHouseAnalysis />} />
             <Route path="/inventory-edit/:id" element={<EditInventory />} />
-            import StockIn from "./Pages/StockIn"; import StockOut from
-            "./Pages/StockOut";
             <Route path="/stock/in/:id" element={<StockIn />} />
             <Route path="/stock/out/:id" element={<StockOut />} />
+            <Route path="/view-bin" element={<ViewBin />} />
+            <Route path="/create-bin" element={<CreateBin />} />
+            <Route path="/edit-bin/:id" element={<EditBin />} />
+            <Route
+              path="/inventory-forecast/:id"
+              element={<InventoryForecaste />}
+            />
           </Route>
         </Route>
       </Routes>

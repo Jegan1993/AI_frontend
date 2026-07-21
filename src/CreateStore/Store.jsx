@@ -11,6 +11,7 @@ import notificationReducer from "../CreateSlice/NotificationSlice.jsx";
 import warehouseReducer from "../CreateSlice/WareHouseSlice.jsx";
 import InventoryReducer from "../CreateSlice/InventorySlice.jsx";
 import StockReducer from "../CreateSlice/StockSlice.jsx";
+import binReducer from "../CreateSlice/BinSlice.jsx";
 export const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -24,5 +25,6 @@ export const store = configureStore({
     warehouse: warehouseReducer,
     inventory: InventoryReducer,
     stock: StockReducer,
+    bin: binReducer,
   },
 });

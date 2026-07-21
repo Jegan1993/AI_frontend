@@ -8,8 +8,8 @@ export const API = {
   login: (data) => {
     return ApiRequest.post("/login", data);
   },
-  
-  //Lead management
+
+  //Lead management Endpoint
 
   getLead: (data) => {
     return ApiRequest.get("/get", data);
@@ -27,7 +27,7 @@ export const API = {
     return ApiRequest.get(`/getById/${id}`);
   },
 
-  // Customer Managements
+  // Customer Managements Endpoint
 
   getCustomer: (params) => ApiRequest.get("/customers", params),
 
@@ -39,7 +39,7 @@ export const API = {
 
   deleteCustomer: (id) => ApiRequest.delete(`/customer/${id}`),
 
-  //quotation
+  //quotation Endpoint
 
   getQuotation: (params) => ApiRequest.get("/quotation", params),
 
@@ -55,7 +55,7 @@ export const API = {
     return ApiRequest.put(`/quotation/status/${id}`, data);
   },
 
-  // Order management
+  // Order management Endpoint
 
   getOrder: (params) => ApiRequest.get("/get-order", params),
 
@@ -70,7 +70,7 @@ export const API = {
   updateOrderStatus: (id, data) => {
     return ApiRequest.put(`/order/status/${id}`, data);
   },
-  //shipment api
+  //shipment Endpoint
 
   getShipment: (params) => ApiRequest.get("/get-shipment", params),
 
@@ -87,9 +87,7 @@ export const API = {
   updateRouteLocation: (id, data) =>
     ApiRequest.put(`/shipment/location/${id}`, data),
 
-
- 
-  //Notification
+  //Notification Endpoint
 
   getNotifications: (params) => ApiRequest.get("/notifications", params),
 
@@ -97,7 +95,7 @@ export const API = {
 
   deleteNotification: (id) => ApiRequest.delete(`/notification/${id}`),
 
-  //wareHouse
+  //wareHouse Endpoint
 
   getWarehouse: () => ApiRequest.get("/get-warehouse"),
 
@@ -114,7 +112,7 @@ export const API = {
 
   warehouseCapacity: (id) => ApiRequest.get(`/warehouse/capacity/${id}`),
 
-  // Inventory
+  // Inventory Endpoint
 
   createInventory: (data) => {
     return ApiRequest.post("/inventory/create", data);
@@ -129,14 +127,17 @@ export const API = {
   },
 
   updateInventory: (id, data) => {
-    return ApiRequest.put(`/inventory/update/${id}`, data);
+    return ApiRequest.put(`/inventory/update/${id}`);
   },
 
   deleteInventory: (id) => {
     return ApiRequest.delete(`/inventory/delete/${id}`);
   },
+  InventoryForecasting: (inventoryId, data) => {
+    return ApiRequest.get(`/inventory/forecast/${inventoryId}`, data);
+  },
 
-  // Stock
+  // Stock Endpoint
 
   stockIn: (data) => {
     return ApiRequest.post("/stock/in", data);
@@ -152,5 +153,26 @@ export const API = {
 
   getStockById: (id) => {
     return ApiRequest.get(`/stock/get/${id}`);
+  },
+  //Bin Endpoint
+
+  createBin: (data) => {
+    return ApiRequest.post("/bin/create", data);
+  },
+
+  GetAllBin: () => {
+    return ApiRequest.get("/bin/get");
+  },
+
+  getByIdBin: (id) => {
+    return ApiRequest.get(`/bin/get/${id}`);
+  },
+
+  updateBin: (id, data) => {
+    return ApiRequest.put(`/bin/update/${id}`, data);
+  },
+
+  deleteBin: (id) => {
+    return ApiRequest.delete(`/bin/delete/${id}`);
   },
 };

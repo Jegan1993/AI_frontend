@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { getInventory, deleteInventory } from "../CreateSlice/InventorySlice";
-import { FaEdit, FaTrash, FaArrowDown, FaArrowUp } from "react-icons/fa";
+import { FaEdit, FaTrash } from "react-icons/fa";
+import { Button } from "react-bootstrap";
 function ViewInventory() {
   const dispatch = useDispatch();
 
   const { inventory, loading } = useSelector((state) => state.inventory);
   // console.log("inventory", inventory);
   const [search, setSearch] = useState("");
-
+  const navigate = useNavigate();
   useEffect(() => {
     dispatch(
       getInventory({
@@ -100,7 +101,13 @@ function ViewInventory() {
           >
             <FaTrash />
           </button>
-
+        </div>
+      ),
+    },
+    {
+      name: "StockData",
+      cell: (row) => (
+        <div className="d-flex align-items-center gap-2 flex-nowrap">
           <Link
             to={`/stock/in/${row._id}`}
             className="btn btn-success btn-sm text-nowrap"
@@ -116,6 +123,14 @@ function ViewInventory() {
           >
             Stock Out
           </Link>
+          <Button
+            variant="info"
+            size="sm"
+            className="text-nowrap"
+            onClick={() => navigate(`/inventory-forecast/${row._id}`)}
+          >
+            Forecast
+          </Button>
         </div>
       ),
     },

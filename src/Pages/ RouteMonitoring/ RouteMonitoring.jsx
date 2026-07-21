@@ -231,236 +231,227 @@ function RouteMonitoring() {
       </div>
     );
   }
+  const InfoItem = ({ label, value }) => (
+    <div className="d-flex justify-content-between border-bottom py-3">
+      <span className="text-muted">{label}</span>
 
+      <strong className="text-end">{value}</strong>
+    </div>
+  );
   return (
-    <div className="container mt-4">
-      <div className="card shadow border-0">
-        <div className="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-          <h4 className="mb-0">
-            <i className="fas fa-route me-2"></i>
-            Route Monitoring
-          </h4>
-          <div>
-            <button
-              className="btn btn-success me-2"
-              onClick={handleUpdateLocation}
-              disabled={isUpdating}
-            >
-              <i
-                className={`fas ${isUpdating ? "fa-spinner fa-spin" : "fa-sync"} me-1`}
-              ></i>
-              {isUpdating ? "Updating..." : "Update Location"}
-            </button>
-            <button
-              className="btn btn-light"
-              onClick={() => navigate("/view-shipment")}
-            >
-              <i className="fas fa-arrow-left me-1"></i>
-              Back
-            </button>
+    <div
+      className="container-fluid py-4"
+      style={{
+        background: "#f8fafc",
+        minHeight: "100vh",
+      }}
+    >
+      {/* Header */}
+
+      <div
+        className="card border-0 shadow-lg mb-4"
+        style={{
+          borderRadius: "28px",
+          background: "linear-gradient(135deg,#1e3a8a,#2563eb,#38bdf8)",
+        }}
+      >
+        <div className="card-body p-4 text-white">
+          <div className="d-flex justify-content-between align-items-center flex-wrap">
+            <div>
+              <h2 className="fw-bold mb-2">🚚 Route Monitoring</h2>
+
+              <p className="mb-0 opacity-75">
+                Real-time shipment tracking and AI route intelligence
+              </p>
+            </div>
+
+            <div className="mt-3 mt-md-0">
+              <button
+                className="btn btn-success me-2 px-4"
+                onClick={handleUpdateLocation}
+                disabled={isUpdating}
+              >
+                {isUpdating ? "Updating..." : "Update Location"}
+              </button>
+
+              <button
+                className="btn btn-light px-4"
+                onClick={() => navigate("/view-shipment")}
+              >
+                Back
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {locationError && (
+        <div className="alert alert-warning shadow-sm rounded-4">
+          ⚠️ {locationError}. Using fallback coordinates.
+        </div>
+      )}
+
+      <div className="row g-4">
+        {/* LEFT PANEL */}
+
+        <div className="col-xl-4 col-lg-5">
+          <div
+            className="card border-0 shadow-sm mb-4"
+            style={{
+              borderRadius: "25px",
+            }}
+          >
+            <div className="card-body p-4">
+              <h4 className="fw-bold text-primary mb-4">📦 Shipment Details</h4>
+
+              <InfoItem
+                label="Shipment ID"
+                value={selectedShipment.shipmentNo}
+              />
+
+              <InfoItem
+                label="Status"
+                value={
+                  <span
+                    className={`badge px-3 py-2 ${
+                      selectedShipment.status === "Delivered"
+                        ? "bg-success"
+                        : selectedShipment.status === "In Transit"
+                          ? "bg-primary"
+                          : selectedShipment.status === "Delayed"
+                            ? "bg-warning"
+                            : "bg-secondary"
+                    }`}
+                  >
+                    {selectedShipment.status || "--"}
+                  </span>
+                }
+              />
+
+              <InfoItem
+                label="Location"
+                value={selectedShipment.currentLocation || "--"}
+              />
+
+              <InfoItem
+                label="Latitude"
+                value={
+                  selectedShipment.currentLatitude
+                    ? Number(selectedShipment.currentLatitude).toFixed(6)
+                    : "--"
+                }
+              />
+
+              <InfoItem
+                label="Longitude"
+                value={
+                  selectedShipment.currentLongitude
+                    ? Number(selectedShipment.currentLongitude).toFixed(6)
+                    : "--"
+                }
+              />
+
+              <InfoItem
+                label="Speed"
+                value={`${selectedShipment.speed || 0} km/h`}
+              />
+
+              <InfoItem
+                label="Last Updated"
+                value={
+                  selectedShipment.lastLocationUpdated
+                    ? new Date(
+                        selectedShipment.lastLocationUpdated,
+                      ).toLocaleString()
+                    : "--"
+                }
+              />
+            </div>
+          </div>
+
+          {/* AI CARD */}
+
+          <div
+            className="card border-0 shadow-sm"
+            style={{
+              borderRadius: "25px",
+            }}
+          >
+            <div className="card-body p-4">
+              <h4 className="fw-bold text-success mb-4">
+                🤖 AI Route Analysis
+              </h4>
+
+              <InfoItem
+                label="ETA"
+                value={selectedShipment.aiResult?.eta || "--"}
+              />
+
+              <InfoItem
+                label="Risk"
+                value={
+                  <span className="badge bg-warning text-dark px-3 py-2">
+                    {selectedShipment.aiResult?.delayRisk || "--"}
+                  </span>
+                }
+              />
+
+              <div className="mt-3">
+                <strong>Recommendation</strong>
+
+                <div className="alert alert-info rounded-4 mt-2">
+                  💡
+                  {selectedShipment.aiResult?.recommendation ||
+                    "No AI analysis available"}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div className="card-body">
-          {locationError && (
-            <div
-              className="alert alert-warning alert-dismissible fade show"
-              role="alert"
-            >
-              <i className="fas fa-exclamation-triangle me-2"></i>
-              Location Error: {locationError}. Using fallback coordinates.
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="alert"
-                aria-label="Close"
-              ></button>
-            </div>
-          )}
+        {/* MAP */}
 
-          <div className="row">
-            <div className="col-md-4">
-              <div className="card shadow-sm">
-                <div className="card-body">
-                  <h5 className="text-primary mb-3">
-                    <i className="fas fa-ship me-2"></i>
-                    Shipment Details
-                  </h5>
+        <div className="col-xl-8 col-lg-7">
+          <div
+            className="card border-0 shadow-sm"
+            style={{
+              borderRadius: "25px",
+            }}
+          >
+            <div className="card-body p-2">
+              <MapContainer
+                center={[coordinates.latitude, coordinates.longitude]}
+                zoom={13}
+                style={{
+                  height: "720px",
+                  width: "100%",
+                }}
+                className="rounded-4"
+              >
+                <TileLayer
+                  attribution="&copy; OpenStreetMap"
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                />
 
-                  <div className="mb-2">
-                    <strong>Shipment ID:</strong>
-                    <span className="ms-2">{selectedShipment.shipmentNo}</span>
-                  </div>
+                <Marker
+                  position={[coordinates.latitude, coordinates.longitude]}
+                >
+                  <Popup>
+                    <div className="text-center">
+                      <h6 className="fw-bold">{selectedShipment.shipmentNo}</h6>
 
-                  <div className="mb-2">
-                    <strong>Status:</strong>
-                    <span
-                      className={`ms-2 badge ${
-                        selectedShipment.status === "Delivered"
-                          ? "bg-success"
-                          : selectedShipment.status === "In Transit"
-                            ? "bg-primary"
-                            : selectedShipment.status === "Delayed"
-                              ? "bg-warning"
-                              : "bg-secondary"
-                      }`}
-                    >
-                      {selectedShipment.status || "--"}
-                    </span>
-                  </div>
+                      <p>
+                        📍
+                        {selectedShipment.currentLocation || "Unknown"}
+                      </p>
 
-                  <div className="mb-2">
-                    <strong>Current Location:</strong>
-                    <span className="ms-2">
-                      {selectedShipment.currentLocation || "--"}
-                    </span>
-                  </div>
-
-                  <div className="mb-2">
-                    <strong>Latitude:</strong>
-                    <span className="ms-2">
-                      {selectedShipment.currentLatitude !== undefined &&
-                      selectedShipment.currentLatitude !== null
-                        ? parseFloat(selectedShipment.currentLatitude).toFixed(
-                            6,
-                          )
-                        : userLocation?.latitude
-                          ? userLocation.latitude.toFixed(6)
-                          : "--"}
-                    </span>
-                  </div>
-
-                  <div className="mb-2">
-                    <strong>Longitude:</strong>
-                    <span className="ms-2">
-                      {selectedShipment.currentLongitude !== undefined &&
-                      selectedShipment.currentLongitude !== null
-                        ? parseFloat(selectedShipment.currentLongitude).toFixed(
-                            6,
-                          )
-                        : userLocation?.longitude
-                          ? userLocation.longitude.toFixed(6)
-                          : "--"}
-                    </span>
-                  </div>
-
-                  <div className="mb-2">
-                    <strong>Speed:</strong>
-                    <span className="ms-2">
-                      {selectedShipment.speed || 0} km/h
-                    </span>
-                  </div>
-
-                  <div>
-                    <strong>Last Updated:</strong>
-                    <span className="ms-2">
-                      {selectedShipment.lastLocationUpdated
-                        ? new Date(
-                            selectedShipment.lastLocationUpdated,
-                          ).toLocaleString("en-GB")
-                        : "--"}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="card shadow-sm mt-3">
-                <div className="card-body">
-                  <h5 className="text-success mb-3">
-                    <i className="fas fa-robot me-2"></i>
-                    AI Route Analysis
-                  </h5>
-
-                  <div className="mb-2">
-                    <strong>ETA:</strong>
-                    <span className="ms-2">
-                      {selectedShipment.aiResult?.eta || "--"}
-                    </span>
-                  </div>
-
-                  <div className="mb-2">
-                    <strong>Risk Level:</strong>
-                    <span
-                      className={`ms-2 badge ${
-                        selectedShipment.aiResult?.delayRisk === "Low"
-                          ? "bg-success"
-                          : selectedShipment.aiResult?.delayRisk === "Medium"
-                            ? "bg-warning"
-                            : selectedShipment.aiResult?.delayRisk === "High"
-                              ? "bg-danger"
-                              : "bg-secondary"
-                      }`}
-                    >
-                      {selectedShipment.aiResult?.delayRisk || "--"}
-                    </span>
-                  </div>
-
-                  <div>
-                    <strong>Recommendation:</strong>
-                    <div className="alert alert-info mt-2 mb-0">
-                      <i className="fas fa-lightbulb me-2"></i>
-                      {selectedShipment.aiResult?.recommendation ||
-                        "No AI analysis available"}
+                      <span className="badge bg-primary">
+                        {selectedShipment.status}
+                      </span>
                     </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="col-md-8">
-              <div className="card shadow-sm">
-                <div className="card-body p-2">
-                  <MapContainer
-                    center={[coordinates.latitude, coordinates.longitude]}
-                    zoom={13}
-                    style={{ height: "600px", width: "100%" }}
-                    className="rounded"
-                  >
-                    <TileLayer
-                      attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    />
-
-                    <Marker
-                      position={[coordinates.latitude, coordinates.longitude]}
-                    >
-                      <Popup>
-                        <div className="text-center">
-                          <h6 className="mb-1">
-                            {selectedShipment.shipmentNo}
-                          </h6>
-                          <p className="mb-1">
-                            <i className="fas fa-map-marker-alt me-1"></i>
-                            {selectedShipment.currentLocation ||
-                              "Location unknown"}
-                          </p>
-                          <p className="mb-0">
-                            <span
-                              className={`badge ${
-                                selectedShipment.status === "Delivered"
-                                  ? "bg-success"
-                                  : selectedShipment.status === "In Transit"
-                                    ? "bg-primary"
-                                    : selectedShipment.status === "Delayed"
-                                      ? "bg-warning"
-                                      : "bg-secondary"
-                              }`}
-                            >
-                              {selectedShipment.status || "Unknown"}
-                            </span>
-                          </p>
-                          {selectedShipment.speed > 0 && (
-                            <p className="mb-0 mt-1">
-                              <i className="fas fa-tachometer-alt me-1"></i>
-                              {selectedShipment.speed} km/h
-                            </p>
-                          )}
-                        </div>
-                      </Popup>
-                    </Marker>
-                  </MapContainer>
-                </div>
-              </div>
+                  </Popup>
+                </Marker>
+              </MapContainer>
             </div>
           </div>
         </div>
