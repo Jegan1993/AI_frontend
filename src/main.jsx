@@ -7,6 +7,7 @@ import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import Toast from "./ToastContainer/Toast.jsx";
 import { Provider } from "react-redux";
 import { store } from "./CreateStore/Store.jsx";
+import "./ToastContainer/Toast.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <Provider store={store}>

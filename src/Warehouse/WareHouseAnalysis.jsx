@@ -21,10 +21,11 @@ import {
 } from "react-bootstrap";
 
 import { warehouseAnalytics } from "../CreateSlice/WareHouseSlice.jsx";
+import { useNavigate } from "react-router-dom";
 
 function WareHouseAnalysis() {
   const dispatch = useDispatch();
-
+  const navigate = useNavigate();
   const { analytics, loading } = useSelector((state) => state.warehouse);
 
   useEffect(() => {
@@ -48,33 +49,45 @@ function WareHouseAnalysis() {
   const health = totalItems
     ? Math.round((analytics?.totalProducts / totalItems) * 100)
     : 0;
-
-  const StatCard = ({ title, value, icon, color, subtitle }) => (
+  const StatCard = ({ title, value, subtitle, icon, color, onClick }) => (
     <Card
+      onClick={onClick}
       className="border-0 shadow-sm h-100"
       style={{
         borderRadius: "20px",
+        cursor: "pointer",
+        transition: "0.3s",
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.transform = "translateY(-5px)";
+        e.currentTarget.style.boxShadow = "0 10px 25px rgba(0,0,0,0.15)";
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.transform = "translateY(0)";
+        e.currentTarget.style.boxShadow = "";
       }}
     >
-      <Card.Body className="p-4">
-        <div className="d-flex justify-content-between">
+      <Card.Body>
+        <div className="d-flex justify-content-between align-items-center">
           <div>
-            <p className="text-muted mb-2">{title}</p>
+            <small className="text-muted">{title}</small>
 
-            <h1 className="fw-bold mb-1">{value}</h1>
+            <h2 className="fw-bold">{value}</h2>
 
-            <small className="text-muted">{subtitle}</small>
+            <small>{subtitle}</small>
           </div>
 
           <div
-            className="d-flex justify-content-center align-items-center"
             style={{
-              width: 65,
-              height: 65,
-              borderRadius: "18px",
+              width: 60,
+              height: 60,
+              borderRadius: "50%",
               background: `${color}20`,
               color,
-              fontSize: 28,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              fontSize: "24px",
             }}
           >
             {icon}
@@ -131,6 +144,7 @@ function WareHouseAnalysis() {
             subtitle="Active locations"
             icon={<FaWarehouse />}
             color="#2563eb"
+            onClick={() => navigate("/view-warehouse")}
           />
         </Col>
 
@@ -141,6 +155,7 @@ function WareHouseAnalysis() {
             subtitle="Total inventory items"
             icon={<FaBoxOpen />}
             color="#16a34a"
+            onClick={() => navigate("/view-inventory")}
           />
         </Col>
 
@@ -151,6 +166,7 @@ function WareHouseAnalysis() {
             subtitle="Available quantity"
             icon={<FaBoxes />}
             color="#0891b2"
+            onClick={() => navigate("/view-stock")}
           />
         </Col>
 
@@ -161,13 +177,12 @@ function WareHouseAnalysis() {
             subtitle="Need attention"
             icon={<FaExclamationTriangle />}
             color="#dc2626"
+            // onClick={() => navigate("/inventory-alerts")}
           />
         </Col>
       </Row>
 
       <Row className="g-4">
-        {/* HEALTH */}
-
         <Col lg={5}>
           <Card
             className="border-0 shadow-sm h-100"

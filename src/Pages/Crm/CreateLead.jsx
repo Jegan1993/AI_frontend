@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { createLeads } from "../../CreateSlice/LeadSlice";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { toast } from "react-toastify";
 function CreateLead() {
   const navigate = useNavigate();
 
@@ -58,11 +59,10 @@ function CreateLead() {
     const result = await dispatch(createLeads(values));
 
     if (createLeads.fulfilled.match(result)) {
-      resetForm();
-
+      toast.success(result.payload?.message);
       navigate("/lead");
-    } else {
-      console.log(result.payload);
+    } else if (createLeads.rejected.match(result)) {
+      toast.error(result.payload?.message || result.error?.message);
     }
   };
   const formik = useFormik({

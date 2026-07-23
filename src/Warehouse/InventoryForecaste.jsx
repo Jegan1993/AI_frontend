@@ -326,20 +326,97 @@ function InventoryForecaste() {
       </Row>
 
       {/* RECOMMENDATION */}
-
       <Card
-        className="border-0 shadow-sm mt-4"
+        className="border-0 shadow-lg mt-4"
         style={{
           borderRadius: "25px",
+          overflow: "hidden",
         }}
       >
-        <Card.Body className="p-4">
-          <h4 className="fw-bold text-warning">
-            <FaLightbulb className="me-2" />
-            Smart Recommendation
-          </h4>
+        <Card.Header
+          style={{
+            background: "linear-gradient(135deg,#0f172a,#1e293b)",
+            color: "#fff",
+            border: "none",
+            padding: "20px 30px",
+          }}
+        >
+          <h3 className="mb-0 fw-bold">🤖 AI Inventory Analysis</h3>
+        </Card.Header>
 
-          <p className="text-muted mb-0">{forecast?.recommendation}</p>
+        <Card.Body className="p-4">
+          <Alert
+            variant={
+              forecast?.ai?.risk === "High"
+                ? "danger"
+                : forecast?.ai?.risk === "Medium"
+                  ? "warning"
+                  : "success"
+            }
+            className="rounded-4"
+          >
+            <h5 className="fw-bold mb-2">AI Recommendation</h5>
+
+            <p className="mb-0">{forecast?.ai?.recommendation}</p>
+          </Alert>
+
+          <Row className="g-4 mt-2">
+            <Col md={4}>
+              <Card
+                className="border-0 bg-danger bg-opacity-10 h-100"
+                style={{ borderRadius: "18px" }}
+              >
+                <Card.Body>
+                  <small className="text-muted">Risk Level</small>
+
+                  <h3 className="text-danger fw-bold mt-2">
+                    {forecast?.ai?.risk}
+                  </h3>
+                </Card.Body>
+              </Card>
+            </Col>
+
+            <Col md={4}>
+              <Card
+                className="border-0 bg-primary bg-opacity-10 h-100"
+                style={{ borderRadius: "18px" }}
+              >
+                <Card.Body>
+                  <small className="text-muted">Priority</small>
+
+                  <h3 className="text-primary fw-bold mt-2">
+                    {forecast?.ai?.priority}
+                  </h3>
+                </Card.Body>
+              </Card>
+            </Col>
+
+            <Col md={4}>
+              <Card
+                className="border-0 bg-success bg-opacity-10 h-100"
+                style={{ borderRadius: "18px" }}
+              >
+                <Card.Body>
+                  <small className="text-muted">AI Confidence</small>
+
+                  <h3 className="text-success fw-bold mt-2">
+                    {forecast?.ai?.confidence}
+                  </h3>
+                </Card.Body>
+              </Card>
+            </Col>
+          </Row>
+
+          <Card
+            className="border-0 bg-light mt-4"
+            style={{ borderRadius: "18px" }}
+          >
+            <Card.Body>
+              <h5 className="fw-bold mb-3">📊 Business Insight</h5>
+
+              <p className="text-muted mb-0">{forecast?.ai?.businessInsight}</p>
+            </Card.Body>
+          </Card>
         </Card.Body>
       </Card>
     </div>

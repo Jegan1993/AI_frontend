@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
 
 import {
   getCustomerById,
@@ -67,7 +68,10 @@ function EditCustomer() {
     );
 
     if (updateCustomer.fulfilled.match(result)) {
+      toast.success(result.payload?.message);
       navigate("/get-customer");
+    } else if (updateCustomer.rejected.match(result)) {
+      toast.error(result.payload?.message || result.error?.message);
     }
   };
 

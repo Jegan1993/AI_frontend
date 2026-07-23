@@ -17,6 +17,7 @@ import {
   clearEmail,
   generateProposal,
 } from "../../CreateSlice/AiSlice";
+import { toast } from "react-toastify";
 function Lead() {
   const [showModal, setShowModal] = useState(false);
   const [showEmailModal, setShowEmailModal] = useState(false);
@@ -211,7 +212,14 @@ function Lead() {
   };
 
   const handleDelete = async (id) => {
-    await dispatch(deleteLeads(id));
+    try {
+      const response = await dispatch(deleteLeads(id)).unwrap();
+
+      toast.success(response.message);
+      dispatch(getLeads());
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
 
   const handleAddButtonClick = () => {
@@ -226,7 +234,7 @@ function Lead() {
 
       navigate("/get-customer");
     } else {
-      alert(result.payload?.message || "Customer conversion failed.");
+      alert(result.payload?.message);
     }
   };
 

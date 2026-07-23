@@ -3,6 +3,7 @@ import DataTable from "react-data-table-component";
 import { FaEdit, FaTrash, FaPlus, FaSyncAlt, FaSearch } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 import {
   getQuotation,
@@ -47,14 +48,14 @@ function ViewQuotation() {
   };
 
   const handleDelete = async (id) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this quotation?",
-    );
-
-    if (!confirmDelete) return;
-
     const result = await dispatch(deleteQuotation(id));
 
+    if (deleteQuotation.fulfilled.match(result)) {
+      toast.success(result.payload?.message);
+      navigate("/view-quotation");
+    } else if (deleteQuotation.rejected.match(result)) {
+      toast.error(result.payload?.message || result.error?.message);
+    }
     if (deleteQuotation.fulfilled.match(result)) {
       dispatch(getQuotation());
     }
@@ -155,7 +156,7 @@ function ViewQuotation() {
     },
   ];
   const handleStatusChange = async (id, status) => {
-      const result = await dispatch(
+    const result = await dispatch(
       updateQuotationStatus({
         id,
         status,

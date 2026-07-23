@@ -3,7 +3,7 @@ import DataTable from "react-data-table-component";
 import { FaEdit, FaTrash, FaPlus, FaSearch, FaSyncAlt } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-
+import { toast } from "react-toastify";
 import {
   getOrder,
   deleteOrder,
@@ -35,12 +35,20 @@ function ViewOrder() {
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this order?")) return;
-
     const result = await dispatch(deleteOrder(id));
 
     if (deleteOrder.fulfilled.match(result)) {
       dispatch(getOrder());
+    }
+    if (deleteOrder.fulfilled.match(result)) {
+      toast.success(result.payload?.message);
+      navigate("/view-order");
+    } else if (deleteOrder.rejected.match(result)) {
+      toast.error(
+        result.payload?.message ||
+          result.error?.message ||
+          "Failed to update order.",
+      );
     }
   };
 

@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getLeadById, updateLeads } from "../../CreateSlice/LeadSlice";
+import { toast } from "react-toastify";
 function EditLead() {
   const navigate = useNavigate();
 
@@ -25,7 +26,6 @@ function EditLead() {
   const { lead, loading } = useSelector((state) => state.lead);
   const { id } = useParams();
 
-
   // useEffect(() => {
   // }, [lead]);
 
@@ -36,7 +36,6 @@ function EditLead() {
         e.target.type === "number" ? Number(e.target.value) : e.target.value,
     }));
   };
-  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -47,9 +46,11 @@ function EditLead() {
         data: formData,
       }),
     );
-
     if (updateLeads.fulfilled.match(result)) {
+      toast.success(result.payload?.message);
       navigate("/lead");
+    } else if (updateLeads.rejected.match(result)) {
+      toast.error(result.payload?.message || result.error?.message);
     }
   };
   const handleAddButtonClick = () => {

@@ -4,7 +4,7 @@ import { FaEdit, FaTrash } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getCustomer, deleteCustomer } from "../../CreateSlice/CustomerSlice";
-
+import { toast } from "react-toastify";
 function ViewCustomer() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -20,8 +20,14 @@ function ViewCustomer() {
   };
 
   const handleDelete = async (id) => {
-    await dispatch(deleteCustomer(id));
-    dispatch(getCustomer());
+    const result = await dispatch(deleteCustomer(id));
+
+    if (deleteCustomer.fulfilled.match(result)) {
+      toast.success(result.payload?.message);
+      navigate("/get-customer");
+    } else if (deleteCustomer.rejected.match(result)) {
+      toast.error(result.payload?.message || result.error?.message);
+    }
   };
 
   const columns = [

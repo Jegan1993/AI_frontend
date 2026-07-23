@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-
+import { toast } from "react-toastify";
 import { createShipment } from "../../CreateSlice/ShipmentSlice";
 import ShipmentForm from "./ShipmentForm";
 
@@ -30,6 +30,16 @@ function CreateShipment() {
 
     if (createShipment.fulfilled.match(result)) {
       navigate("/view-shipment");
+    }
+    if (createShipment.fulfilled.match(result)) {
+      toast.success(result.payload?.message);
+      navigate("/view-shipment");
+    } else if (createShipment.rejected.match(result)) {
+      toast.error(
+        result.payload?.message ||
+          result.error?.message ||
+          "Failed to update shipment.",
+      );
     }
   };
 

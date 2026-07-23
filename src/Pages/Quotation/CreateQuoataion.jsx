@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 import QuotationForm from "./QuotationForm";
+import { toast } from "react-toastify";
 
 import { getCustomer } from "../../CreateSlice/CustomerSlice";
 import { createQuotation } from "../../CreateSlice/QuotationSlice";
@@ -56,9 +57,11 @@ function CreateQuotation() {
     e.preventDefault();
 
     const result = await dispatch(createQuotation(formData));
-
     if (createQuotation.fulfilled.match(result)) {
+      toast.success(result.payload?.message);
       navigate("/view-quotation");
+    } else if (createQuotation.rejected.match(result)) {
+      toast.error(result.payload?.message || result.error?.message);
     }
   };
 

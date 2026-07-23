@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-
+import { toast } from "react-toastify";
 import OrderForm from "./OrderForm";
 import { createOrder } from "../../CreateSlice/OrderSlice";
 
@@ -22,15 +22,13 @@ function CreateOrder() {
   };
 
   const handleSubmit = async (values) => {
-    console.log("Parent Submit");
-    console.log(values);
-
     const result = await dispatch(createOrder(values));
 
-    console.log(result);
-
     if (createOrder.fulfilled.match(result)) {
+      toast.success(result.payload?.message);
       navigate("/view-order");
+    } else if (createOrder.rejected.match(result)) {
+      toast.error(result.payload?.message || result.error?.message);
     }
   };
 

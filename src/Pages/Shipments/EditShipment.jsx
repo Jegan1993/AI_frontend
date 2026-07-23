@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-
+import { toast } from "react-toastify";
 import {
   getShipmentById,
   updateShipment,
@@ -58,6 +58,21 @@ function EditShipment() {
     }
   };
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+
+  //   const result = await dispatch(
+  //     updateShipment({
+  //       id,
+  //       data: formData,
+  //     }),
+  //   );
+
+  //   if (updateShipment.fulfilled.match(result)) {
+  //     navigate("/view-shipment");
+  //   }
+  // };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -69,7 +84,14 @@ function EditShipment() {
     );
 
     if (updateShipment.fulfilled.match(result)) {
+      toast.success(result.payload?.message);
       navigate("/view-shipment");
+    } else if (updateShipment.rejected.match(result)) {
+      toast.error(
+        result.payload?.message ||
+          result.error?.message ||
+          "Failed to update shipment.",
+      );
     }
   };
 

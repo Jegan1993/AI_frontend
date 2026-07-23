@@ -207,6 +207,13 @@ function SideBar() {
             </NavLink>
 
             <NavLink
+              to="/view-bin"
+              style={linkStyle(location.pathname.startsWith("/view-bin"))}
+            >
+              <FaBox />
+              Bin
+            </NavLink>
+            <NavLink
               to="/view-inventory"
               style={linkStyle(location.pathname.startsWith("/view-inventory"))}
             >
@@ -220,14 +227,6 @@ function SideBar() {
             >
               <FaBox />
               Stock
-            </NavLink>
-
-            <NavLink
-              to="/view-bin"
-              style={linkStyle(location.pathname.startsWith("/view-bin"))}
-            >
-              <FaBox />
-              Bin
             </NavLink>
 
             <NavLink

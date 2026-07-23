@@ -16,7 +16,7 @@ import {
   updateShipment,
   updateShipmentStatus,
 } from "../../CreateSlice/ShipmentSlice";
-
+import { toast } from "react-toastify";
 function ViewShipment() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -59,12 +59,20 @@ function ViewShipment() {
     navigate(`/route-monitoring/${row._id}`);
   };
   const handleDelete = async (id) => {
-    if (!window.confirm("Delete this Shipment?")) return;
-
     const result = await dispatch(deleteShipment(id));
 
     if (deleteShipment.fulfilled.match(result)) {
       dispatch(getShipments());
+    }
+    if (deleteShipment.fulfilled.match(result)) {
+      toast.success(result.payload?.message);
+      navigate("/view-shipment");
+    } else if (deleteShipment.rejected.match(result)) {
+      toast.error(
+        result.payload?.message ||
+          result.error?.message ||
+          "Failed to update shipment.",
+      );
     }
   };
 

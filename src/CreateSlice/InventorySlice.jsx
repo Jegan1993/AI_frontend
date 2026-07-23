@@ -97,8 +97,10 @@ const initialState = {
   forecast: null,
   loading: false,
   error: null,
+  total: 0,
+  page: 1,
+  limit: 10,
 };
-
 const inventorySlice = createSlice({
   name: "inventory",
   initialState,

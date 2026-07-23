@@ -8,7 +8,7 @@ import {
   getQuotationById,
   updateQuotation,
 } from "../../CreateSlice/QuotationSlice";
-
+import { toast } from "react-toastify";
 import { getCustomer } from "../../CreateSlice/CustomerSlice";
 
 function EditQuotation() {
@@ -105,7 +105,10 @@ function EditQuotation() {
     );
 
     if (updateQuotation.fulfilled.match(result)) {
+      toast.success(result.payload?.message);
       navigate("/view-quotation");
+    } else if (updateQuotation.rejected.match(result)) {
+      toast.error(result.payload?.message || result.error?.message);
     }
   };
 
