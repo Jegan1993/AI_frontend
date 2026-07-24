@@ -40,6 +40,14 @@ import ViewBin from "./Warehouse/ViewBin.jsx";
 import EditBin from "./Warehouse/EditBin.jsx";
 import CreateBin from "./Warehouse/CreateBin.jsx";
 import InventoryForecaste from "./Warehouse/InventoryForecaste.jsx";
+import UpdateVehicle from "./Pages/FleetManagement/UpdateVehicle.jsx";
+import ViewVehicle from "./Pages/FleetManagement/ViewVehicle.jsx";
+import CreateVehicle from "./Pages/FleetManagement/CreateVehicle.jsx";
+import Driver from "./Pages/FleetManagement/Driver.jsx";
+import CreateDriver from "./Pages/FleetManagement/CreateDriver.jsx";
+import EditDriver from "./Pages/FleetManagement/EditDriver.jsx";
+import ViewFleetAssingment from "./Pages/FleetManagement/ViewFleetAssingment.jsx";
+import CreateFleetAssignment from "./Pages/FleetManagement/CreateFleetAssignment.jsx";
 function App() {
   return (
     <BrowserRouter>
@@ -88,6 +96,20 @@ function App() {
             <Route
               path="/inventory-forecast/:id"
               element={<InventoryForecaste />}
+            />{" "}
+            <Route path="/view-vehicle" element={<ViewVehicle />} />
+            <Route path="/create-vehicle" element={<CreateVehicle />} />
+            <Route path="/edit-vehicle/:id" element={<UpdateVehicle />} />
+            <Route path="/view-driver" element={<Driver />} />
+            <Route path="/create-driver" element={<CreateDriver />} />
+            <Route
+              path="/create-fleet-assignment"
+              element={<CreateFleetAssignment />}
+            />
+            <Route path="/update-driver/:id" element={<EditDriver />} />
+            <Route
+              path="/view-fleet-assingnment"
+              element={<ViewFleetAssingment />}
             />
           </Route>
         </Route>

@@ -175,4 +175,48 @@ export const API = {
   deleteBin: (id) => {
     return ApiRequest.delete(`/bin/delete/${id}`);
   },
+  //Fleet Management API
+  // Driver APIs
+  getFleetDriver: (params) => {
+    return ApiRequest.get("/driver/get", { params });
+  },
+
+  createFleetDriver: (data) => {
+    return ApiRequest.post("/driver/create", data);
+  },
+
+  getFleetDriverById: (id) => {
+    return ApiRequest.get(`/driver/get/${id}`);
+  },
+
+  updateFleetDriver: (id, data) => {
+    return ApiRequest.put(`/driver/update/${id}`, data);
+  },
+
+  deleteFleetDriver: (id) => {
+    return ApiRequest.delete(`/driver/delete/${id}`);
+  },
+  createVehicle: (data) => ApiRequest.post("/vehicle/create", data),
+
+  getVehicles: (params) => ApiRequest.get("/vehicle/get", { params }),
+
+  getVehicleById: (id) => ApiRequest.get(`/vehicle/get/${id}`),
+
+  updateVehicle: (id, data) => ApiRequest.put(`/vehicle/update/${id}`, data),
+
+  deleteVehicle: (id) => ApiRequest.delete(`/vehicle/delete/${id}`),
+
+  getFleetAssignment: (params) =>
+    ApiRequest.get("/fleet-assignment/get", { params }),
+
+  createFleetAssignment: (data) =>
+    ApiRequest.post("/fleet-assignment/create", data),
+
+  getFleetAssignmentById: (id) => ApiRequest.get(`/fleet-assignment/get/${id}`),
+
+  updateFleetAssignment: (id, data) =>
+    ApiRequest.put(`/fleet-assignment/update/${id}`, data),
+
+  deleteFleetAssignment: (id) =>
+    ApiRequest.delete(`/fleet-assignment/delete/${id}`),
 };

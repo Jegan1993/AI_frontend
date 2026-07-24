@@ -12,6 +12,9 @@ import warehouseReducer from "../CreateSlice/WareHouseSlice.jsx";
 import InventoryReducer from "../CreateSlice/InventorySlice.jsx";
 import StockReducer from "../CreateSlice/StockSlice.jsx";
 import binReducer from "../CreateSlice/BinSlice.jsx";
+import vehicleReducer from "../CreateSlice/FleetVehicleSlice.jsx";
+import driverReducer from "../CreateSlice/FleetDriveSlice.jsx";
+import fleetAssingReducer from "../CreateSlice/FleetAssingmentSlice.jsx";
 export const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -26,5 +29,8 @@ export const store = configureStore({
     inventory: InventoryReducer,
     stock: StockReducer,
     bin: binReducer,
+    vehicle: vehicleReducer,
+    driver: driverReducer,
+    fleetAssing: fleetAssingReducer,
   },
 });

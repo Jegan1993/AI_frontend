@@ -23,9 +23,6 @@ function SideBar() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const [warehouseOpen, setWarehouseOpen] = useState(false);
-  const [logoutHover, setLogoutHover] = useState(false);
-
   const dashboardActive = location.pathname === "/";
 
   const leadActive =
@@ -39,10 +36,10 @@ function SideBar() {
 
   const quotationActive =
     location.pathname.startsWith("/view-quotation") ||
-    location.pathname.startsWith("/edit-quotation") ||
-    location.pathname.startsWith("/create-quotation");
+    location.pathname.startsWith("/create-quotation") ||
+    location.pathname.startsWith("/edit-quotation");
 
-  const getorderActive =
+  const orderActive =
     location.pathname.startsWith("/view-order") ||
     location.pathname.startsWith("/create-order") ||
     location.pathname.startsWith("/edit-order");
@@ -52,19 +49,34 @@ function SideBar() {
     location.pathname.startsWith("/create-shipment") ||
     location.pathname.startsWith("/edit-shipment");
 
-  const wareHouseActive =
+  // Warehouse Active
+  const warehouseActive =
     location.pathname.startsWith("/view-warehouse") ||
+    location.pathname.startsWith("/view-bin") ||
     location.pathname.startsWith("/view-inventory") ||
     location.pathname.startsWith("/create-inventory") ||
     location.pathname.startsWith("/edit-inventory") ||
     location.pathname.startsWith("/view-stock") ||
     location.pathname.startsWith("/create-stock") ||
-    location.pathname.startsWith("/edit-stock");
+    location.pathname.startsWith("/edit-stock") ||
+    location.pathname.startsWith("/warehouse-analysis");
+
+  // Fleet Active
+  const fleetActive =
+    location.pathname.startsWith("/view-vehicle") ||
+    location.pathname.startsWith("/view-driver") ||
+    location.pathname.startsWith("/view-fleet-assingnment") ||
+    location.pathname.startsWith("/gps-tracking");
+
+  // Keep dropdown open when inside its routes
+  const [warehouseOpen, setWarehouseOpen] = useState(warehouseActive);
+  const [fleetOpen, setFleetOpen] = useState(fleetActive);
+
+  const [logoutHover, setLogoutHover] = useState(false);
 
   const linkStyle = (active) => ({
     display: "flex",
     alignItems: "center",
-    justifyContent: "flex-start",
     gap: "12px",
     width: "100%",
     padding: "12px 15px",
@@ -72,10 +84,11 @@ function SideBar() {
     borderRadius: "10px",
     textDecoration: "none",
     backgroundColor: active ? "#0f766e" : "transparent",
-    color: active ? "#ffffff" : "#e5e7eb",
+    color: active ? "#fff" : "#e5e7eb",
     fontWeight: active ? "600" : "500",
     fontSize: "15px",
-    transition: "all 0.3s ease",
+    transition: "all .3s ease",
+    cursor: "pointer",
   });
 
   const handleLogout = () => {
@@ -90,11 +103,11 @@ function SideBar() {
         minHeight: "100vh",
         background: "linear-gradient(180deg,#111827,#030712)",
         padding: "22px 18px",
-        boxShadow: "3px 0 15px rgba(0,0,0,0.2)",
+        boxShadow: "3px 0 15px rgba(0,0,0,.2)",
         flexShrink: 0,
       }}
     >
-      {/* Logo Section */}
+      {/* Logo */}
       <div
         style={{
           display: "flex",
@@ -109,16 +122,8 @@ function SideBar() {
             height: "45px",
             borderRadius: "12px",
             background: "#ffdf2a",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontSize: "22px",
-            fontWeight: "800",
-            color: "#111827",
           }}
-        >
-          C
-        </div>
+        />
 
         <div>
           <h4
@@ -126,7 +131,6 @@ function SideBar() {
               margin: 0,
               color: "#fff",
               fontSize: "22px",
-              fontWeight: "700",
             }}
           >
             CRM
@@ -163,7 +167,7 @@ function SideBar() {
         Quotation
       </NavLink>
 
-      <NavLink to="/view-order" style={linkStyle(getorderActive)}>
+      <NavLink to="/view-order" style={linkStyle(orderActive)}>
         <FaShoppingCart />
         Order Management
       </NavLink>
@@ -177,23 +181,18 @@ function SideBar() {
       <div>
         <div
           onClick={() => setWarehouseOpen(!warehouseOpen)}
-          style={linkStyle(wareHouseActive)}
+          style={linkStyle(warehouseActive)}
         >
           <FaWarehouse />
-
           <span style={{ flex: 1 }}>Warehouse</span>
 
-          {warehouseOpen ? (
-            <FaChevronUp size={12} />
-          ) : (
-            <FaChevronDown size={12} />
-          )}
+          {warehouseOpen ? <FaChevronUp /> : <FaChevronDown />}
         </div>
 
         {warehouseOpen && (
           <div
             style={{
-              marginLeft: "10px",
+              marginLeft: "12px",
               paddingLeft: "12px",
               borderLeft: "2px solid #374151",
             }}
@@ -213,6 +212,7 @@ function SideBar() {
               <FaBox />
               Bin
             </NavLink>
+
             <NavLink
               to="/view-inventory"
               style={linkStyle(location.pathname.startsWith("/view-inventory"))}
@@ -242,7 +242,63 @@ function SideBar() {
         )}
       </div>
 
-      {/* Logout */}
+      {/* Fleet */}
+      <div>
+        <div
+          onClick={() => setFleetOpen(!fleetOpen)}
+          style={linkStyle(fleetActive)}
+        >
+          <FaTruck />
+          <span style={{ flex: 1 }}>Fleet Management</span>
+
+          {fleetOpen ? <FaChevronUp /> : <FaChevronDown />}
+        </div>
+
+        {fleetOpen && (
+          <div
+            style={{
+              marginLeft: "12px",
+              paddingLeft: "12px",
+              borderLeft: "2px solid #374151",
+            }}
+          >
+            <NavLink
+              to="/view-vehicle"
+              style={linkStyle(location.pathname.startsWith("/view-vehicle"))}
+            >
+              <FaTruck />
+              Vehicle Management
+            </NavLink>
+
+            <NavLink
+              to="/view-driver"
+              style={linkStyle(location.pathname.startsWith("/view-driver"))}
+            >
+              <FaUsers />
+              Driver Management
+            </NavLink>
+
+            <NavLink
+              to="/view-fleet-assingnment"
+              style={linkStyle(
+                location.pathname.startsWith("/view-fleet-assingnment"),
+              )}
+            >
+              <FaBox />
+              Fleet Assignment
+            </NavLink>
+
+            <NavLink
+              to="/gps-tracking"
+              style={linkStyle(location.pathname.startsWith("/gps-tracking"))}
+            >
+              <FaChartBar />
+              GPS Tracking
+            </NavLink>
+          </div>
+        )}
+      </div>
+
       {/* Logout */}
       <button
         onClick={handleLogout}
@@ -257,13 +313,12 @@ function SideBar() {
           marginTop: "25px",
           border: "none",
           borderRadius: "10px",
-          backgroundColor: logoutHover ? "#dc2626" : "rgba(255,255,255,0.08)",
-          color: "#ffffff",
+          background: logoutHover ? "#dc2626" : "rgba(255,255,255,0.08)",
+          color: "#fff",
           fontWeight: "600",
           fontSize: "15px",
-          textAlign: "left",
           cursor: "pointer",
-          transition: "all 0.3s ease",
+          transition: ".3s",
         }}
       >
         <FaSignOutAlt />
